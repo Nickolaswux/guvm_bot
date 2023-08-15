@@ -51,6 +51,20 @@ buttons = {
 
     "ru_rf_in_regliv_sit_pereezd_yes_yes_mfc": create_button("МФЦ", "ru_rf_in_regliv_sit_pereezd_yes_yes_mfc"),
     "ru_rf_in_regliv_sit_pereezd_yes_yes_epgu": create_button("ЕПГУ", "ru_rf_in_regliv_sit_pereezd_yes_yes_epgu"),
+
+    "ru_rf_in_gospr_razmpod": create_button("Далее ➡️", "ru_rf_in_gospr_razmpod"),
+    "ru_rf_in_gospr_porpolpod": create_button("Далее ➡️", "ru_rf_in_gospr_porpolpod"),
+    "ru_rf_in_gospr_zamsvid": create_button("Далее ➡️", "ru_rf_in_gospr_zamsvid"),
+    "ru_rf_in_gospr_zaksroksvid": create_button("Далее ➡️", "ru_rf_in_gospr_zaksroksvid"),
+    "ru_rf_in_gospr_anulsvid": create_button("Далее ➡️", "ru_rf_in_gospr_anulsvid"),
+    "ru_rf_in_gospr_otkazsam": create_button("Далее ➡️", "ru_rf_in_gospr_otkazsam"),
+    "ru_rf_in_gospr_mneotkazali": create_button("Далее ➡️", "ru_rf_in_gospr_mneotkazali"),
+    "ru_rf_in_gospr_mneotkazalevydat": create_button("Далее ➡️", "ru_rf_in_gospr_mneotkazalevydat"),
+
+    "ru_rf_in_gospr_razmpod_yes": create_button("Да ✅", "ru_rf_in_gospr_razmpod_yes"),
+    "ru_rf_in_gospr_razmpod_no": create_button("Нет ❌", "ru_rf_in_gospr_razmpod_no"),
+    "ru_rf_in_gospr_porpolpod_1": create_button("Порядок получения подъемных", "ru_rf_in_gospr_porpolpod"),
+    "ru_rf_in_gospr_mneotkazali1": create_button("Мне отказали в приеме заявления", "ru_rf_in_gospr_mneotkazali"),
 }
 
 key_s = {
@@ -90,6 +104,20 @@ key_s = {
 
     "ru_rf_in_regliv_sit_pereezd_yes-no_yes-no_key": create_keyboard(buttons["ru_rf_in_regliv_sit_pereezd_yes_yes"],
                                                               buttons["ru_rf_in_regliv_sit_pereezd_yes_no"]),
+
     "ru_rf_in_regliv_sit_pereezd_yes-no_yes-no_key_1": create_keyboard(buttons["ru_rf_in_regliv_sit_pereezd_yes_yes_mfc"],
                                                               buttons["ru_rf_in_regliv_sit_pereezd_yes_yes_epgu"]),
+
+    "ru_rf_in_gospr_razmpod_key": create_keyboard(buttons["ru_rf_in_gospr_razmpod"]),
+    "ru_rf_in_gospr_porpolpod_key": create_keyboard(buttons["ru_rf_in_gospr_porpolpod"]),
+    "ru_rf_in_gospr_zamsvid_key": create_keyboard(buttons["ru_rf_in_gospr_zamsvid"]),
+    "ru_rf_in_gospr_zaksroksvid_key": create_keyboard(buttons["ru_rf_in_gospr_zaksroksvid"]),
+    "ru_rf_in_gospr_anulsvid_key": create_keyboard(buttons["ru_rf_in_gospr_anulsvid"]),
+    "ru_rf_in_gospr_otkazsam_key": create_keyboard(buttons["ru_rf_in_gospr_otkazsam"]),
+    "ru_rf_in_gospr_mneotkazali_key": create_keyboard(buttons["ru_rf_in_gospr_mneotkazali"]),
+    "ru_rf_in_gospr_mneotkazalevydat_key": create_keyboard(buttons["ru_rf_in_gospr_mneotkazalevydat"]),
+
+    "ru_rf_in_gospr_razmpod_yes-no_key": create_keyboard(buttons["ru_rf_in_gospr_razmpod_yes"], buttons["ru_rf_in_gospr_razmpod_no"]),
+    "ru_rf_in_gospr_porpolpod_1_key": create_keyboard(buttons["ru_rf_in_gospr_porpolpod_1"]),
+    "ru_rf_in_gospr_mneotkazali_1_key": create_keyboard(buttons["ru_rf_in_gospr_mneotkazali1"]),
 }
