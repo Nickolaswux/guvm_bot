@@ -39,8 +39,9 @@ async def send_section_messages(user_id, callback_query, message_texts, keyboard
 async def start_command(message: types.Message):
     await bot.send_message(chat_id=message.chat.id, text="Выберите язык / Choose a language:",
                            reply_markup=key_s["lang_key"])
-    await bot.send_message(chat_id=message.chat.id, text="Чтоб отправить свое сообщение в ГУВМ МВД России, отправьте его в чат боту, после чего нажмите ✉ на нижней клавиатуре",
-                           reply_markup=underline_keyboard)
+
+    await bot.send_message(chat_id=message.chat.id, text="*",
+                           reply_markup=ReplyKeyboardRemove())
 
 @dp.message_handler(lambda message: not any(symbol in message.text for symbol in ['✉', '🏠']))
 async def store_user_message(message: types.Message):
@@ -48,23 +49,59 @@ async def store_user_message(message: types.Message):
 
 @dp.message_handler(lambda message: '✉' in message.text)
 async def send_user_message(message: types.Message):
-    # user_mention = f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>'
     user_message = last_user_messages.get(message.from_user.id)
-
+    error_txt = ''
+    qwest_txt = ''
+    lang = user_languages.get(message.from_user.id, 'rus')
     if not user_message or user_message.strip() == '':
-        await message.answer(
-            "Вы не написали сообщение или ваше сообщение пустое. Пожалуйста, введите сообщение и нажмите ✉ снова.")
+
+        if lang == 'rus':
+            error_txt = "Вы не написали сообщение или ваше сообщение пустое. Пожалуйста, отправьте сообщение боту и нажмите ✉ снова."
+        elif lang == 'eng':
+            pass
+        await message.answer(error_txt)
         return
     else:
-        await bot.send_message(chat_id=message.chat.id, text=f'''<b>Отправить Ваше сообщение?</b>
-"{user_message[:4000]}"...
-в ГУВМ МВД России?''', reply_markup=confirm_keyboard)
+        if lang == 'rus':
+            qwest_txt = f'''<b>Отправить Ваше сообщение?</b>
+            "{user_message[:4000]}"...
+            в ГУВМ МВД России?'''
+        elif lang == 'eng':
+            pass
+        await bot.send_message(chat_id=message.chat.id, text=qwest_txt, reply_markup=confirm_keyboard)
+
+
+@dp.message_handler(lambda message: '🏠' in message.text)
+async def start_command(message: types.Message):
+    await bot.send_message(chat_id=message.chat.id, text="Выберите язык / Choose a language:",
+                           reply_markup=key_s["lang_key"], )
+    await bot.send_message(chat_id=message.chat.id, text="*",
+                           reply_markup=ReplyKeyboardRemove())
+
+@dp.callback_query_handler(text="rus")
+async def choose_section_rus(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    user_languages[callback_query.from_user.id] = 'rus'
+    message_texts = [
+        '<b>Выберите раздел</b>                                                      ᅠ ᅠ ',
+        'Для граждан России                                                     ᅠ ᅠ ',
+        '❌ Для иностранных граждан                                          ᅠ ᅠ ',
+        '❌ Для граждан Украины, ЛНР, ДНР, Херсонской области, Запорожской области',
+        '❌ Для Юридических лиц и индивидуальных предпринимателей'
+    ]
+    keyboards = [None, key_s['ru_rf_key'], key_s['ru_ig_key'], key_s['ru_ukr_key'], key_s['ru_org_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+    await bot.send_message(chat_id=callback_query.from_user.id,
+                           text="<b>❗️❗️❗️ Чтоб отправить свое сообщение в ГУВМ МВД России, отправьте его в чат боту, после чего нажмите ✉ на нижней клавиатуре</b>",
+                           reply_markup=underline_keyboard)
+
 
 @dp.callback_query_handler(lambda query: query.data == "confirm_yes")
 async def confirm_send(query: types.CallbackQuery):
     user_message = last_user_messages.get(query.from_user.id)
     user_mention = f'<a href="tg://user?id={query.from_user.id}">{query.from_user.first_name}</a>'
-    await bot.edit_message_text("  ", chat_id=query.from_user.id, message_id=query.message.message_id, reply_markup=None)
+    await bot.edit_message_text("*", chat_id=query.from_user.id, message_id=query.message.message_id, reply_markup=None)
     await bot.send_message(chat_id=query.from_user.id, text="Отправка сообщения...", reply_markup=ReplyKeyboardRemove())
     await bot.send_message(group_id, f"Сообщение от {user_mention}: {user_message}")
 
@@ -77,25 +114,6 @@ async def cancel_send(query: types.CallbackQuery):
     await bot.edit_message_text("Отправка отменена.", chat_id=query.from_user.id, message_id=query.message.message_id, reply_markup=None)
     await bot.answer_callback_query(query.id, "Отправка отменена.")
     await bot.send_message(chat_id=query.from_user.id, text="Чтоб отправить свое сообщение в ГУВМ МВД России, отправьте его в чат боту, после чего нажмите ✉ на нижней клавиатуре", reply_markup=underline_keyboard)
-
-@dp.message_handler(lambda message: '🏠' in message.text)
-async def start_command(message: types.Message):
-    await bot.send_message(chat_id=message.chat.id, text="Выберите язык / Choose a language:",
-                           reply_markup=key_s["lang_key"], )
-
-@dp.callback_query_handler(text="rus")
-async def choose_section_rus(callback_query: types.CallbackQuery):
-    user_id = callback_query.from_user.id
-    message_texts = [
-        '<b>Выберите раздел</b>                                                      ᅠ ᅠ ',
-        'Для граждан России                                                     ᅠ ᅠ ',
-        '❌ Для иностранных граждан                                          ᅠ ᅠ ',
-        '❌ Для граждан Украины, ЛНР, ДНР, Херсонской области, Запорожской области',
-        '❌ Для Юридических лиц и индивидуальных предпринимателей'
-    ]
-    keyboards = [None, key_s['ru_rf_key'], key_s['ru_ig_key'], key_s['ru_ukr_key'], key_s['ru_org_key']]
-    await delete_previous_messages(user_id, message_storage)
-    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
 
 @dp.callback_query_handler(text="ru_rf")
@@ -517,6 +535,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     message_storage = {}
     last_user_messages = {}
+    user_languages = {}
     from aiogram import executor
 
     executor.start_polling(dp, skip_updates=True)

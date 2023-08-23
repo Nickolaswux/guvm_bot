@@ -14,7 +14,7 @@ underline_keyboard = ReplyKeyboardMarkup(resize_keyboard=True)
 home_btn = KeyboardButton('🏠')
 message_btn = KeyboardButton('✉')
 underline_keyboard.add(home_btn, message_btn)
-
+#клавиатура да/нет для отправки сообщения
 confirm_keyboard = InlineKeyboardMarkup(row_width=2)
 confirm_keyboard.add(InlineKeyboardButton("Да", callback_data="confirm_yes"),
                      InlineKeyboardButton("Нет", callback_data="confirm_no"))
