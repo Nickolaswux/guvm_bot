@@ -15,6 +15,10 @@ home_btn = KeyboardButton('🏠')
 message_btn = KeyboardButton('✉')
 underline_keyboard.add(home_btn, message_btn)
 
+confirm_keyboard = InlineKeyboardMarkup(row_width=2)
+confirm_keyboard.add(InlineKeyboardButton("Да", callback_data="confirm_yes"),
+                     InlineKeyboardButton("Нет", callback_data="confirm_no"))
+
 buttons = {
     "rus": create_button("🇷🇺 Русский 🇷🇺", "rus"),
     "en": create_button("❌ 🇬🇧 English 🇬🇧", "en"),

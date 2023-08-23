@@ -1,19 +1,23 @@
 from aiogram import Bot, Dispatcher, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import ReplyKeyboardRemove
-import tokenbot, Text_serv, asyncio
-from keyboards_serv import key_s, underline_keyboard
 
-token = tokenbot.TOKONBOT
-group_id = tokenbot.MESSAGE_GROUP
+import aiogram.utils.markdown as mar
+import Text_serv, asyncio
+from tokenbot import TOKONBOT, MESSAGE_GROUP
+from keyboards_serv import key_s, underline_keyboard, confirm_keyboard
+import logging
 
-bot = Bot(token=token)
+token = TOKONBOT
+group_id = MESSAGE_GROUP
+
+bot = Bot(token=token, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 async def send_and_save_messages(user_id, message_texts, keyboards, storage):
     message_ids = []
     for text, keyboard in zip(message_texts, keyboards):
-        message = await bot.send_message(chat_id=user_id, text=text, parse_mode='HTML', reply_markup=keyboard)
+        message = await bot.send_message(chat_id=user_id, text=text, reply_markup=keyboard)
         message_ids.append(message.message_id)
     storage[user_id] = message_ids
 
@@ -28,40 +32,51 @@ async def delete_previous_messages(user_id, storage):
 async def send_section_messages(user_id, callback_query, message_texts, keyboards):
     await bot.delete_message(chat_id=user_id, message_id=callback_query.message.message_id)
     for text, keyboard in zip(message_texts, keyboards):
-        await bot.send_message(chat_id=user_id, text=text, parse_mode='HTML', reply_markup=keyboard)
-
-
+        await bot.send_message(chat_id=user_id, text=text, reply_markup=keyboard)
 
 
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
     await bot.send_message(chat_id=message.chat.id, text="Выберите язык / Choose a language:",
                            reply_markup=key_s["lang_key"])
-    await bot.send_message(chat_id=message.chat.id, text="Чтоб отправить свое сообщение в ГУВМ МВД России, отправьте его чат-боту, после чего нажмите ✉ на нижней клавиатуре",
+    await bot.send_message(chat_id=message.chat.id, text="Чтоб отправить свое сообщение в ГУВМ МВД России, отправьте его в чат боту, после чего нажмите ✉ на нижней клавиатуре",
                            reply_markup=underline_keyboard)
 
 @dp.message_handler(lambda message: not any(symbol in message.text for symbol in ['✉', '🏠']))
 async def store_user_message(message: types.Message):
-    last_user_messages[message.from_user.id] = message.text
-
+    last_user_messages[message.from_user.id] = mar.quote_html(message.text)
 
 @dp.message_handler(lambda message: '✉' in message.text)
 async def send_user_message(message: types.Message):
-    user_mention = f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>'
+    # user_mention = f'<a href="tg://user?id={message.from_user.id}">{message.from_user.first_name}</a>'
     user_message = last_user_messages.get(message.from_user.id)
 
     if not user_message or user_message.strip() == '':
         await message.answer(
             "Вы не написали сообщение или ваше сообщение пустое. Пожалуйста, введите сообщение и нажмите ✉ снова.")
         return
+    else:
+        await bot.send_message(chat_id=message.chat.id, text=f'''<b>Отправить Ваше сообщение?</b>
+"{user_message[:4000]}"...
+в ГУВМ МВД России?''', reply_markup=confirm_keyboard)
 
-    # Удаляем клавиатуру
-    await bot.send_message(chat_id=message.chat.id, text="Отправка сообщения...", reply_markup=ReplyKeyboardRemove())
-    await bot.send_message(group_id, f"Сообщение от {user_mention}: {user_message}", parse_mode='HTML')
+@dp.callback_query_handler(lambda query: query.data == "confirm_yes")
+async def confirm_send(query: types.CallbackQuery):
+    user_message = last_user_messages.get(query.from_user.id)
+    user_mention = f'<a href="tg://user?id={query.from_user.id}">{query.from_user.first_name}</a>'
+    await bot.edit_message_text("  ", chat_id=query.from_user.id, message_id=query.message.message_id, reply_markup=None)
+    await bot.send_message(chat_id=query.from_user.id, text="Отправка сообщения...", reply_markup=ReplyKeyboardRemove())
+    await bot.send_message(group_id, f"Сообщение от {user_mention}: {user_message}")
 
-    # Возвращаем клавиатуру обратно через короткое время (можно изменить таймаут)
     await asyncio.sleep(5)
-    await bot.send_message(chat_id=message.chat.id, text="Сообщение отправлено.", reply_markup=underline_keyboard)
+    await bot.answer_callback_query(query.id, "Сообщение отправлено.")
+    await bot.send_message(chat_id=query.from_user.id, text="Сообщение отправлено.", reply_markup=underline_keyboard)
+
+@dp.callback_query_handler(lambda query: query.data == "confirm_no")
+async def cancel_send(query: types.CallbackQuery):
+    await bot.edit_message_text("Отправка отменена.", chat_id=query.from_user.id, message_id=query.message.message_id, reply_markup=None)
+    await bot.answer_callback_query(query.id, "Отправка отменена.")
+    await bot.send_message(chat_id=query.from_user.id, text="Чтоб отправить свое сообщение в ГУВМ МВД России, отправьте его в чат боту, после чего нажмите ✉ на нижней клавиатуре", reply_markup=underline_keyboard)
 
 @dp.message_handler(lambda message: '🏠' in message.text)
 async def start_command(message: types.Message):
@@ -200,7 +215,7 @@ async def query_ru_rf_in_regliv(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text="ru_rf_in_regliv_faq")
 async def query_ru_rf_in_regliv_faq(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = [Text_serv.reg_liv_txt1, Text_serv.reg_liv_txt2, Text_serv.reg_liv_txt3]
+    message_texts = [Text_serv.reg_liv_txt1, Text_serv.reg_liv_txt2, Text_serv.reg_liv_txt3, Text_serv.reg_liv_txt3,]
     keyboards = [None] * len(message_texts)
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
@@ -499,6 +514,7 @@ async def query_ru_rf_in_gospr_zamsvid_sempoloshen_unbrak(callback_query: types.
 
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO)
     message_storage = {}
     last_user_messages = {}
     from aiogram import executor
