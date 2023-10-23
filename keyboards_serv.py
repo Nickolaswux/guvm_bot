@@ -87,8 +87,40 @@ buttons = {
     "ru_rf_in_gospr_zamsvid_sostavsevi_rebenok": create_button("Далее ➡️", "ru_rf_in_gospr_zamsvid_sostavsevi_rebenok"),
     "ru_rf_in_gospr_zamsvid_sostavsevi_umer": create_button("Далее ➡️", "ru_rf_in_gospr_zamsvid_sostavsevi_umer"),
 
-"ru_rf_in_gospr_zamsvid_sempoloshen_brak": create_button("Далее ➡️", "ru_rf_in_gospr_zamsvid_sempoloshen_brak"),
-"ru_rf_in_gospr_zamsvid_sempoloshen_unbrak": create_button("Далее ➡️", "ru_rf_in_gospr_zamsvid_sempoloshen_unbrak")
+    "ru_rf_in_gospr_zamsvid_sempoloshen_brak": create_button("Далее ➡️", "ru_rf_in_gospr_zamsvid_sempoloshen_brak"),
+    "ru_rf_in_gospr_zamsvid_sempoloshen_unbrak": create_button("Далее ➡️", "ru_rf_in_gospr_zamsvid_sempoloshen_unbrak"),
+
+    "ru_ig_in": create_button("Далее ➡️", "ru_ig_in"),
+    "ru_ig_out": create_button("Далее ➡️", "ru_ig_out"),
+    "ru_ig_board": create_button("Далее ➡️", "ru_ig_board"),
+
+    "ru_ig_in_sitizen": create_button("Далее ➡️", "ru_ig_in_sitizen"),
+
+    "ru_ig_in_sitizen_manual": create_button("Далее ➡️", "ru_ig_in_sitizen_manual"),
+    "ru_ig_in_sitizen_inf": create_button("Далее ➡️", "ru_ig_in_sitizen_inf"),
+    "ru_ig_in_sitizen_pris": create_button("Далее ➡️", "ru_ig_in_sitizen_pris"),
+
+    "ru_ig_in_sitizen_manual_vng_yes": create_button("Да ✅", "ru_ig_in_sitizen_manual_vng_yes"),
+    "ru_ig_in_sitizen_manual_vng_no": create_button("Нет ❌", "ru_ig_in_sitizen_manual_vng_no"),
+
+    "ru_ig_in_sitizen_manual_vng+sertrus_yes": create_button("Да ✅", "ru_ig_in_sitizen_manual_vng+sertrus_yes"),
+    "ru_ig_in_sitizen_manual_vng+sertrus_no": create_button("Нет ❌", "ru_ig_in_sitizen_manual_vng+sertrus_no"),
+
+    "ru_ig_in_sitizen_manual_vng+gosprog_yes": create_button("Да ✅", "ru_ig_in_sitizen_manual_vng+gosprog_yes"),
+    "ru_ig_in_sitizen_manual_vng+gosprog_no": create_button("Нет ❌", "ru_ig_in_sitizen_manual_vng+gosprog_no"),
+
+    "ru_ig_in_sitizen_vng_only_sng": create_button("Далее ➡️", "ru_ig_in_sitizen_vng_only_sng"),
+    "ru_ig_in_sitizen_vng_only_blizkorod": create_button("Далее ➡️", "ru_ig_in_sitizen_vng_only_blizkorod"),
+    "ru_ig_in_sitizen_vng_only_vladeyrus": create_button("Далее ➡️", "ru_ig_in_sitizen_vng_only_vladeyrus"),
+    "ru_ig_in_sitizen_vng_only_lbgussr": create_button("Далее ➡️", "ru_ig_in_sitizen_vng_only_lbgussr"),
+    "ru_ig_in_sitizen_vng_only_borninussr": create_button("Далее ➡️", "ru_ig_in_sitizen_vng_only_borninussr"),
+    "ru_ig_in_sitizen_vng_only_nothing": create_button("Далее ➡️", "ru_ig_in_sitizen_vng_only_nothing"),
+
+    "ru_ig_in_sitizen_vng_only_sng_yes": create_button("Да ✅", "ru_ig_in_sitizen_vng_only_sng_yes"),
+    "ru_ig_in_sitizen_vng_only_sng_no": create_button("Нет ❌", "ru_ig_in_sitizen_vng_only_sng_no"),
+
+    "ru_ig_in_sitizen_vng_only_sng_blizrod_yes": create_button("Да ✅", "ru_ig_in_sitizen_vng_only_sng_blizrod_yes"),
+    "ru_ig_in_sitizen_vng_only_sng_blizrod_no": create_button("Нет ❌", "ru_ig_in_sitizen_vng_only_sng_blizrod_no"),
 }
 
 key_s = {
@@ -160,5 +192,36 @@ key_s = {
     "ru_rf_in_gospr_zamsvid_sempoloshen_brak_key": create_keyboard(buttons["ru_rf_in_gospr_zamsvid_sempoloshen_brak"]),
     "ru_rf_in_gospr_zamsvid_sempoloshen_unbrak_key": create_keyboard(buttons["ru_rf_in_gospr_zamsvid_sempoloshen_unbrak"]),
 
-}
+    "ru_ig_in_key": create_keyboard(buttons["ru_ig_in"]),
+    "ru_ig_out_key": create_keyboard(buttons["ru_ig_out"]),
+    "ru_ig_board_key": create_keyboard(buttons["ru_ig_board"]),
 
+    "ru_ig_in_sitizen_key": create_keyboard(buttons["ru_ig_in_sitizen"]),
+
+    "ru_ig_in_sitizen_manual_key": create_keyboard(buttons["ru_ig_in_sitizen_manual"]),
+    "ru_ig_in_sitizen_inf_key": create_keyboard(buttons["ru_ig_in_sitizen_inf"]),
+    "ru_ig_in_sitizen_pris_key": create_keyboard(buttons["ru_ig_in_sitizen_pris"]),
+
+    "ru_ig_in_sitizen_manual_vng_key": create_keyboard(buttons["ru_ig_in_sitizen_manual_vng_yes"],
+                                                       buttons["ru_ig_in_sitizen_manual_vng_no"]),
+
+    "ru_ig_in_sitizen_manual_vng+sertrus_key": create_keyboard(buttons["ru_ig_in_sitizen_manual_vng+sertrus_yes"],
+                                                               buttons["ru_ig_in_sitizen_manual_vng+sertrus_no"]),
+
+    "ru_ig_in_sitizen_manual_vng+gosprog_key": create_keyboard(buttons["ru_ig_in_sitizen_manual_vng+gosprog_yes"],
+                                                               buttons["ru_ig_in_sitizen_manual_vng+gosprog_no"]),
+
+
+    "ru_ig_in_sitizen_vng_only_sng_key": create_keyboard(buttons['ru_ig_in_sitizen_vng_only_sng']),
+    "ru_ig_in_sitizen_vng_only_blizkorod_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_blizkorod"]),
+    "ru_ig_in_sitizen_vng_only_vladeyrus_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_vladeyrus"]),
+    "ru_ig_in_sitizen_vng_only_lbgussr_key": create_keyboard(buttons[ "ru_ig_in_sitizen_vng_only_lbgussr"]),
+    "ru_ig_in_sitizen_vng_only_borninussr_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_borninussr"]),
+    "ru_ig_in_sitizen_vng_only_nothing_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_nothing"]),
+
+    "ru_ig_in_sitizen_vng_only_sng_yn_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_sng_yes"],
+                                                               buttons["ru_ig_in_sitizen_vng_only_sng_no"]),
+
+"ru_ig_in_sitizen_vng_only_sng_blizrod_yn_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_sng_blizrod_yes"],
+                                                                buttons["ru_ig_in_sitizen_vng_only_sng_blizrod_no"])
+}

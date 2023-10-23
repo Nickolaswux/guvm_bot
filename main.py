@@ -3,10 +3,11 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import ReplyKeyboardRemove
 
 import aiogram.utils.markdown as mar
-import Text_serv, asyncio
+import Text_serv, asyncio, logging
 from tokenbot import TOKONBOT, MESSAGE_GROUP
 from keyboards_serv import key_s, underline_keyboard, confirm_keyboard
-import logging
+
+
 
 token = TOKONBOT
 group_id = MESSAGE_GROUP
@@ -85,7 +86,7 @@ async def choose_section_rus(callback_query: types.CallbackQuery):
     message_texts = [
         '<b>Выберите раздел</b>                                                      ᅠ ᅠ ',
         'Для граждан России                                                     ᅠ ᅠ ',
-        '❌ Для иностранных граждан                                          ᅠ ᅠ ',
+        'Для иностранных граждан                                          ᅠ ᅠ ',
         '❌ Для граждан Украины, ЛНР, ДНР, Херсонской области, Запорожской области',
         '❌ Для Юридических лиц и индивидуальных предпринимателей'
     ]
@@ -530,6 +531,195 @@ async def query_ru_rf_in_gospr_zamsvid_sempoloshen_unbrak(callback_query: types.
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
+@dp.callback_query_handler(text="ru_ig")
+async def query_ru_ig(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        '<b>Где Вы сейчас находитесь?</b>                                                      ᅠ ᅠ ',
+        'В Российской Федерации                                         ᅠ ᅠ ',
+        '❌ За пределами Российской Федерации                                          ᅠ ᅠ ',
+        '❌ В пункте пропуска через Государственную границу Российской Федерации'
+    ]
+    keyboards = [None, key_s['ru_ig_in_key'], key_s['ru_ig_out_key'], key_s['ru_ig_board_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in")
+async def query_ru_ig_in(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        '<b>Выберите характер вашей ситуации</b>',
+        'Я хочу стать гражданином России                  ᅠ ᅠ ',
+        '❌ Я - Участник Государственной программы по оказанию содействия добровольному преселению в Российскую Федерацию соотечественников, проживающих за рубежом',
+        '❌ Я намерен постоянно проживать в России',
+        '❌ Я нахожусь с краткосрочным визитом в России',
+        '❌ Я учусь в образовательной организации или готовлюсь к поступлению',
+        '❌ Я работаю по найму или буду трудоустраиваться',
+        '❌ Я ищу убежище в Российской Федерации',
+        '❌ Мне нужна помощь с постановкой на миграционный учет, а также с регистрацией по месту пребывания или изменения места пребывания',
+        '❌ У меня возникли проблемы с пребыванием в России'
+    ]
+    keyboards = [None, key_s['ru_ig_in_sitizen_key'], None, None, None,None,None,None,None,None]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen")
+async def query_ru_ig_in_sitizen(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>{Text_serv.sitizen_txt1}</b>                                                      ᅠ ᅠ ',
+        'Получить персональную инструкцию                                         ᅠ ᅠ ',
+        'Полезная информация',
+        'Как принести Присягу гражданина Российской Федерации'
+]
+    keyboards = [None, key_s['ru_ig_in_sitizen_manual_key'], key_s['ru_ig_in_sitizen_inf_key'], key_s['ru_ig_in_sitizen_pris_key'],]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_manual")
+async def query_ru_ig_in_sitizen_manual(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>У вас есть?</b>                                                      ᅠ ᅠ ',
+        'Вид на жительство в Российской Федерации'
+]
+    keyboards = [None, key_s['ru_ig_in_sitizen_manual_vng_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_manual_vng_yes")
+async def query_ru_ig_in_sitizen_manual_vng_yes(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>У вас есть?</b>                                                      ᅠ ᅠ ',
+        'Сертификат носителя русского языка'
+]
+    keyboards = [None, key_s['ru_ig_in_sitizen_manual_vng+sertrus_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_manual_vng+sertrus_yes")
+async def query_ru_ig_in_sitizen_manual_vngsertrus_yes(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>{Text_serv.sitizen_man1}</b>                                                      ᅠ ᅠ ',
+        ]
+    keyboards = [None]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_manual_vng+sertrus_no")
+async def query_ru_ig_in_sitizen_manual_vngsertrus_no(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>У вас есть?</b>                                                      ᅠ ᅠ ',
+        'Свидетельство участника Госпрограммы'
+]
+    keyboards = [None, key_s['ru_ig_in_sitizen_manual_vng+gosprog_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_manual_vng+gosprog_yes")
+async def query_ru_ig_in_sitizen_manual_vnggosprog_yes(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>{Text_serv.sitizen_man2}</b>                                                      ᅠ ᅠ ',
+        ]
+    keyboards = [None]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_manual_vng+gosprog_no")
+async def query_ru_ig_in_sitizen_manual_vnggosprog_no(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        '<b>Перед Вами перечень самых распространенных оснований, позволяющих получить гражданство в упрощенном порядке</b>',
+        'Я являюсь гражданином Украины, республики Беларусь, Республики Молдова, республики Казахстан или Кыргызской Республики',
+        '''Мой близкий родственник - гражданин России.
+(близкими родственниками являются: родители, дети, родные братья и сестры, бабушки, дедушки,внуки''',
+        'Я владею русским языком как родным и готов пройти процедуру признания носителем русского языка',
+        'Являюсь лицом без гражданства и ранее состял в гражданстве СССР',
+        "Родился на территории РСФСР и ранее состоял в гражданстве бывшего СССР",
+        "Мне ничего из вышеперечисленного не подходит"
+        ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_sng_key"], key_s["ru_ig_in_sitizen_vng_only_blizkorod_key"],
+                 key_s["ru_ig_in_sitizen_vng_only_vladeyrus_key"], key_s["ru_ig_in_sitizen_vng_only_lbgussr_key"],
+                 key_s["ru_ig_in_sitizen_vng_only_borninussr_key"], key_s["ru_ig_in_sitizen_vng_only_nothing_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_sng")
+async def query_ru_ig_in_sitizen_vng_only_sng(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>Вы в прошлом состяли в гражданстве Белорусской ССР, Казахской ССР, или Киргизской ССР и одновременно в гражданстве бывшего СССР, либо родились или проживали на территории одной из указанных республик приобретаемого гражданства РСФСР до 21 декабря 1991 года</b>',
+
+]
+    keyboards = [key_s['ru_ig_in_sitizen_vng_only_sng_yn_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_sng_yes")
+async def ru_ig_in_sitizen_vng_only_sng_yes(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man3
+    ]
+    keyboards = [None]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_sng_no")
+async def ru_ig_in_sitizen_vng_only_sng_no(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>{Text_serv.sitizen_txt2}</b>'
+    ]
+    keyboards = [key_s['ru_ig_in_sitizen_vng_only_sng_blizrod_yn_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_sng_yes")
+async def ru_ig_in_sitizen_vng_only_sng_yes(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>{Text_serv.sitizen_txt2}</b>'
+    ]
+    keyboards = [None, key_s['ru_ig_in_sitizen_vng_only_sng_blizrod_yn_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_sng_blizrod_yes")
+async def ru_ig_in_sitizen_vng_only_sng_blizrod_yes(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man4
+    ]
+    keyboards = [None]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_inf")
+async def query_ru_ig_in_sitizen_inf(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>{Text_serv.sitizen_txt1}</b>                                                    ᅠ ᅠ ',
+]
+    keyboards = [None]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_pris")
+async def query_ru_ig_in_sitizen_pris(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'<b>{Text_serv.sitizen_txt1}</b>                                                      ᅠ ᅠ ',
+]
+    keyboards = [None]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
