@@ -559,7 +559,7 @@ async def query_ru_ig_in(callback_query: types.CallbackQuery):
         '❌ Мне нужна помощь с постановкой на миграционный учет, а также с регистрацией по месту пребывания или изменения места пребывания',
         '❌ У меня возникли проблемы с пребыванием в России'
     ]
-    keyboards = [None, key_s['ru_ig_in_sitizen_key'], None, None, None,None,None,None,None,None]
+    keyboards = [None, key_s['ru_ig_in_sitizen_key'], None, None, None, None, None, None, None, None]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
