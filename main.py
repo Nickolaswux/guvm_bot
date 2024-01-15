@@ -38,7 +38,7 @@ async def send_section_messages(user_id, callback_query, message_texts, keyboard
 
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
-    await bot.send_message(chat_id=message.chat.id, text="Выберите язык / Choose a language:",
+    await bot.send_message(chat_id=message.chat.id, text=f"Выберите язык / Choose a language:{Text_serv.ancor_bottom}",
                            reply_markup=key_s["lang_key"])
 
     await bot.send_message(chat_id=message.chat.id, text="*",
@@ -84,7 +84,7 @@ async def choose_section_rus(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     user_languages[callback_query.from_user.id] = 'rus'
     message_texts = [
-        '<b>Выберите раздел</b>                                                      ᅠ ᅠ ',
+        f'<b>Выберите раздел</b>{Text_serv.ancor_bottom}                                                      ᅠ ᅠ ',
         'Для граждан России                                                     ᅠ ᅠ ',
         'Для иностранных граждан                                          ᅠ ᅠ ',
         '❌ Для граждан Украины, ЛНР, ДНР, Херсонской области, Запорожской области',
