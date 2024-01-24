@@ -4,15 +4,18 @@ from aiogram.types import ReplyKeyboardRemove
 
 import aiogram.utils.markdown as mar
 import Text_serv, asyncio, logging
-from tokenbot import TOKONBOT, MESSAGE_GROUP
+from tokenbot import TOKONBOT, MESSAGE_GROUP, TOKONBOT_POST
 from keyboards_serv import key_s, underline_keyboard, confirm_keyboard
-
 
 token = TOKONBOT
 group_id = MESSAGE_GROUP
+token_post = TOKONBOT_POST
 
 bot = Bot(token=token, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
+
+bot_post = Bot(token=token_post, parse_mode='HTML')
+dp_post = Dispatcher(bot_post)
 
 async def send_and_save_messages(user_id, message_texts, keyboards, storage):
     message_ids = []
@@ -33,8 +36,15 @@ async def send_section_messages(user_id, callback_query, message_texts, keyboard
     await bot.delete_message(chat_id=user_id, message_id=callback_query.message.message_id)
     for text, keyboard in zip(message_texts, keyboards):
         await bot.send_message(chat_id=user_id, text=text, reply_markup=keyboard)
+@dp_post.message_handler(commands=['start'])
+async def start_command(message: types.Message):
+    await bot.send_message(chat_id=message.chat.id, text="Выберите язык / Choose a language:",
+                           reply_markup=key_s["lang_key"])
 
+    await bot.send_message(chat_id=message.chat.id, text="*",
+                           reply_markup=ReplyKeyboardRemove())
 
+#обработка команды /start
 @dp.message_handler(commands=['start'])
 async def start_command(message: types.Message):
     await bot.send_message(chat_id=message.chat.id, text="Выберите язык / Choose a language:",
@@ -43,10 +53,12 @@ async def start_command(message: types.Message):
     await bot.send_message(chat_id=message.chat.id, text="*",
                            reply_markup=ReplyKeyboardRemove())
 
+
 @dp.message_handler(lambda message: not any(symbol in message.text for symbol in ['✉', '🏠']))
 async def store_user_message(message: types.Message):
     last_user_messages[message.from_user.id] = mar.quote_html(message.text)
 
+#обработчик для отправки сообщения по конверту
 @dp.message_handler(lambda message: '✉' in message.text)
 async def send_user_message(message: types.Message):
     user_message = last_user_messages.get(message.from_user.id)
@@ -70,14 +82,14 @@ async def send_user_message(message: types.Message):
             pass
         await bot.send_message(chat_id=message.chat.id, text=qwest_txt, reply_markup=confirm_keyboard)
 
-
+#Обработка кнопки домой
 @dp.message_handler(lambda message: '🏠' in message.text)
 async def start_command(message: types.Message):
     await bot.send_message(chat_id=message.chat.id, text="Выберите язык / Choose a language:",
                            reply_markup=key_s["lang_key"], )
     await bot.send_message(chat_id=message.chat.id, text="*",
                            reply_markup=ReplyKeyboardRemove())
-
+#выбран русский язык
 @dp.callback_query_handler(text="rus")
 async def choose_section_rus(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -98,7 +110,7 @@ async def choose_section_rus(callback_query: types.CallbackQuery):
                            text="<b>❗️❗️❗️ Чтоб отправить свое сообщение в ГУВМ МВД России, отправьте его в чат боту, после чего нажмите ✉ на нижней клавиатуре</b>",
                            reply_markup=underline_keyboard)
 
-
+#нажата кнопка да, для подтверждения отпраки сообщения в ГУВМ
 @dp.callback_query_handler(lambda query: query.data == "confirm_yes")
 async def confirm_send(query: types.CallbackQuery):
     user_message = last_user_messages.get(query.from_user.id)
@@ -111,13 +123,14 @@ async def confirm_send(query: types.CallbackQuery):
     await bot.answer_callback_query(query.id, "Сообщение отправлено.")
     await bot.send_message(chat_id=query.from_user.id, text="Сообщение отправлено.", reply_markup=underline_keyboard)
 
+#Нажата кнопка нет, для отмены отправки сообщения в ГУВМ
 @dp.callback_query_handler(lambda query: query.data == "confirm_no")
 async def cancel_send(query: types.CallbackQuery):
     await bot.edit_message_text("Отправка отменена.", chat_id=query.from_user.id, message_id=query.message.message_id, reply_markup=None)
     await bot.answer_callback_query(query.id, "Отправка отменена.")
     await bot.send_message(chat_id=query.from_user.id, text="Чтоб отправить свое сообщение в ГУВМ МВД России, отправьте его в чат боту, после чего нажмите ✉ на нижней клавиатуре", reply_markup=underline_keyboard)
 
-
+#Русский язык - для граждан РФ
 @dp.callback_query_handler(text="ru_rf")
 async def query_ru_rf(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -130,7 +143,7 @@ async def query_ru_rf(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации
 @dp.callback_query_handler(text="ru_rf_in")
 async def query_ru_rf_in(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -148,7 +161,7 @@ async def query_ru_rf_in(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт
 @dp.callback_query_handler(text="ru_rf_in_pasp")
 async def query_ru_rf_in_pasp(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -163,7 +176,7 @@ async def query_ru_rf_in_pasp(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - ЧаВо
 @dp.callback_query_handler(text="ru_rf_in_pasp_faq")
 async def query_ru_rf_in_pasp_faq(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -172,7 +185,7 @@ async def query_ru_rf_in_pasp_faq(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации
 @dp.callback_query_handler(text="ru_rf_in_pasp_sit")
 async def query_ru_rf_in_pasp_sit(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -181,7 +194,7 @@ async def query_ru_rf_in_pasp_sit(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт
 @dp.callback_query_handler(text="ru_rf_in_zp")
 async def query_ru_rf_in_zp(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -197,7 +210,7 @@ async def query_ru_rf_in_zp(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - ЧаВо
 @dp.callback_query_handler(text="ru_rf_in_zp_faq")
 async def query_ru_rf_in_zp_faq(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -206,7 +219,7 @@ async def query_ru_rf_in_zp_faq(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации
 @dp.callback_query_handler(text="ru_rf_in_zp_sit")
 async def query_ru_rf_in_zp_sit(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -215,7 +228,7 @@ async def query_ru_rf_in_zp_sit(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Регистрация по месту пребывания
 @dp.callback_query_handler(text="ru_rf_in_regliv")
 async def query_ru_rf_in_regliv(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -231,31 +244,31 @@ f'''<b>В разделе часто задаваемые вопросы даны
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Регистрация по месту пребывания - ЧаВо
 @dp.callback_query_handler(text="ru_rf_in_regliv_faq")
 async def query_ru_rf_in_regliv_faq(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = [Text_serv.reg_liv_txt1, Text_serv.reg_liv_txt2, Text_serv.reg_liv_txt3, Text_serv.reg_liv_txt3]
-    keyboards = [None, None, None, key_s["ru_rf_in_regliv_sit_back_key"]]
+    message_texts = [Text_serv.reg_liv_txt1, Text_serv.reg_liv_txt2,
+                     Text_serv.reg_liv_txt3, Text_serv.reg_liv_txt4]
+    keyboards = [None, None, None, key_s["ru_rf_in_regliv_faq_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Регистрация по месту пребывания - Жизненные ситуации
 @dp.callback_query_handler(text="ru_rf_in_regliv_sit")
 async def query_ru_rf_in_regliv_sit(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        'Я узнал, что в моем жилом помещении прописан неизвестный мне человек. Что в этом случае необходимо делать?',
-        'Я хочу снять с регистрационного учета одного из жильцов. Как это сделать?',
-        'Переезд в другой регион',
-        'Назад'
+f'''1️⃣ Я узнал, что в моем жилом помещении прописан неизвестный мне человек. Что в этом случае необходимо делать?
+2️⃣ Я хочу снять с регистрационного учета одного из жильцов. Как это сделать?
+3️⃣ Переезд в другой регион
+{Text_serv.ru_ancor_bottom} '''
     ]
-    keyboards = [key_s['ru_rf_in_regliv_sit_chchel_key'], key_s['ru_rf_in_regliv_sit_snone_key'],
-                 key_s['ru_rf_in_regliv_sit_pereezd_key'], key_s["ru_rf_in_regliv_sit_back_key"]]
+    keyboards = [key_s['ru_rf_in_regliv_sit_chchel_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Регистрация по месту пребывания - Жизненные ситуации - прописан неизвестный мне человек
 @dp.callback_query_handler(text="ru_rf_in_regliv_sit_chchel")
 async def query_ru_rf_in_regliv_sit_chchel(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -264,16 +277,16 @@ async def query_ru_rf_in_regliv_sit_chchel(callback_query: types.CallbackQuery):
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Регистрация по месту пребывания - Жизненные ситуации - Я хочу снять с регистрационного учета одного из жильцов
 @dp.callback_query_handler(text="ru_rf_in_regliv_sit_snone")
 async def query_ru_rf_in_regliv_sit_snone(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = ['Раздел в процессе наполнения']
-    keyboards = [key_s["ru_rf_in_regliv_sit_pereezd1_back_key"]]
+    keyboards = [key_s["ru_rf_in_regliv_sit_pereezd_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
-
+#Русский язык - для граждан РФ - В Российской Федерации - Регистрация по месту пребывания - Жизненные ситуации - переезд в другой регион
 @dp.callback_query_handler(text="ru_rf_in_regliv_sit_pereezd")
 async def query_ru_rf_in_regliv_sit_pereezd(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -286,7 +299,7 @@ async def query_ru_rf_in_regliv_sit_pereezd(callback_query: types.CallbackQuery)
 @dp.callback_query_handler(text="ru_rf_in_regliv_sit_pereezd_yes")
 async def query_ru_rf_in_regliv_sit_pereezd_yes(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = ['Зарегистрировано ли право собственности на избранное жилоепомещение в ЕГРН?']
+    message_texts = ['Зарегистрировано ли право собственности на избранное жилое помещение в ЕГРН?']
     keyboards = [key_s['ru_rf_in_regliv_sit_pereezd_yes-no_yes-no_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
@@ -296,7 +309,7 @@ async def query_ru_rf_in_regliv_sit_pereezd_yes(callback_query: types.CallbackQu
 async def query_ru_rf_in_regliv_sit_pereezd_no(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = ['Раздел в процессе наполнения']
-    keyboards = [None] * len(message_texts)
+    keyboards = [key_s['ru_rf_in_regliv_sit_pereezd_yes_yes-no_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -314,7 +327,7 @@ async def query_ru_rf_in_regliv_pereezd_yes_yes(callback_query: types.CallbackQu
 async def query_ru_rf_in_regliv_sit_pereezd_yes_no(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = ['Раздел в процессе наполнения']
-    keyboards = [None] * len(message_texts)
+    keyboards = [key_s["ru_rf_in_regliv_sit_pereezd_yes_-no_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -323,7 +336,7 @@ async def query_ru_rf_in_regliv_sit_pereezd_yes_no(callback_query: types.Callbac
 async def ru_rf_in_regliv_sit_pereezd_yes_yes_mfc(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = ['Раздел в процессе наполнения']
-    keyboards = [None] * len(message_texts)
+    keyboards = [key_s["ru_rf_in_regliv_sit_pereezd_yes_yes_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -332,7 +345,7 @@ async def ru_rf_in_regliv_sit_pereezd_yes_yes_mfc(callback_query: types.Callback
 async def ru_rf_in_regliv_sit_pereezd_yes_yes_epgu(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = ['Раздел в процессе наполнения']
-    keyboards = [None] * len(message_texts)
+    keyboards = [key_s["ru_rf_in_regliv_sit_pereezd_yes_yes_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -340,21 +353,17 @@ async def ru_rf_in_regliv_sit_pereezd_yes_yes_epgu(callback_query: types.Callbac
 @dp.callback_query_handler(text="ru_rf_in_gospr")
 async def query_ru_rf_in_gospr(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = ['''1️⃣ Какой размер подъемных мне полагается?,
-2️⃣'Какой порядок получения подъемных',
-3️⃣'Вам необходимо заменить свидетельство об участии в государственной программе?',
-4️⃣'Что делать, если заканчивается срок действия свидетельства участника Государственной программы?',
-5️⃣'В каких случаях анулируется свидетельство участника государственной программы?',
-6️⃣'Как самому отказаться от участия в Государственной программе?',
-7️⃣'Мне отказали в приеме заявления об участии в Государственной программе',
-8️⃣'Мне отказали в выдаче свидельства об участии в Государственной программе',
-'Назад'''
+    message_texts = [f'''1️⃣ Какой размер подъемных мне полагается
+2️⃣ Какой порядок получения подъемных
+3️⃣ Вам необходимо заменить свидетельство об участии в государственной программе?
+4️⃣ Что делать, если заканчивается срок действия свидетельства участника Государственной программы?
+5️⃣ В каких случаях анулируется свидетельство участника государственной программы?
+6️⃣ Как самому отказаться от участия в Государственной программе?
+7️⃣ Мне отказали в приеме заявления об участии в Государственной программе
+8️⃣ Мне отказали в выдаче свидельства об участии в Государственной программе
+{Text_serv.ru_ancor_bottom} '''
                      ]
-    keyboards = [key_s['ru_rf_in_gospr_razmpod_key']#, key_s['ru_rf_in_gospr_porpolpod_key'],
-                 #key_s['ru_rf_in_gospr_zamsvid_key'], key_s['ru_rf_in_gospr_zaksroksvid_key'],
-                 #key_s['ru_rf_in_gospr_anulsvid_key'], key_s['ru_rf_in_gospr_otkazsam_key'],
-                 #key_s['ru_rf_in_gospr_mneotkazali_key'], key_s['ru_rf_in_gospr_mneotkazali_key'],
-                 #key_s['ru_rf_in_pasp_back_key']
+    keyboards = [key_s['ru_rf_in_gospr_razmpod_key']
                  ]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
@@ -400,7 +409,7 @@ async def query_ru_rf_in_gospr_porpolpod(callback_query: types.CallbackQuery):
 async def query_ru_rf_in_gospr_mneotkazali(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_txt4]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_home_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -408,20 +417,16 @@ async def query_ru_rf_in_gospr_mneotkazali(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text="ru_rf_in_gospr_zamsvid")
 async def query_ru_rf_in_gospr(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = ['У вас изменился состав семьи?',
-                     'У Вас изменилось семейное положение?',
-                     'Вы потеряли свидетельство участника Государственной программы?',
-                     'У Вас либо членов Вашей семьи произошло изменение фамилии, имени, отчества?',
-                     'Что делать, если в выданном свидетельстве участника Государственной программы обнаружены неточности, ошибки или отсутствие необходимых записей, печатей, штампов?',
-                     'Что делать, если выданное свидетельство участника Государственной программы непригодно по причине повреждений, нарушающих целостность свидетельства или его частей?',
-                     'Что делать, если в выданном свидетельстве участника Государственной программы обнаружены исправления, подчистки, отсутствует или переклеена фотография?',
-                     'Что делать в случае утраты членом семьи участника ГОсударственной программы, указанным в свидетельстве, статуса члена семьи участника ГОсударственной программы?'
-                     ]
-    keyboards = [key_s['ru_rf_in_gospr_zamsvid_sostavsevi_key'], key_s['ru_rf_in_gospr_zamsvid_sempoloshen_key'],
-                 key_s['ru_rf_in_gospr_zamsvid_poteryali_key'], key_s['ru_rf_in_gospr_zamsvid_smenaystdannyh_key'],
-                 key_s['ru_rf_in_gospr_zamsvid_svidoshibky_key'], key_s['ru_rf_in_gospr_zamsvid_svidneprigodno_key'],
-                 key_s['ru_rf_in_gospr_zamsvid_svidsispravl_key'], key_s['ru_rf_in_gospr_zamsvid_utratastatusa_key']
-                 ]
+    message_texts = [f'''1️⃣ У вас изменился состав семьи?
+2️⃣ У Вас изменилось семейное положение?
+3️⃣ Вы потеряли свидетельство участника Государственной программы?
+4️⃣ У Вас либо членов Вашей семьи произошло изменение фамилии, имени, отчества?',
+5️⃣ Что делать, если в выданном свидетельстве участника Государственной программы обнаружены неточности, ошибки или отсутствие необходимых записей, печатей, штампов?',
+6️⃣ Что делать, если выданное свидетельство участника Государственной программы непригодно по причине повреждений, нарушающих целостность свидетельства или его частей?',
+7️⃣ Что делать, если в выданном свидетельстве участника Государственной программы обнаружены исправления, подчистки, отсутствует или переклеена фотография?',
+8️⃣ Что делать в случае утраты членом семьи участника ГОсударственной программы, указанным в свидетельстве, статуса члена семьи участника ГОсударственной программы?'
+{Text_serv.ru_ancor_bottom} ''']
+    keyboards = [key_s['ru_rf_in_gospr_zamsvid_sostavsevi_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -429,10 +434,9 @@ async def query_ru_rf_in_gospr(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text="ru_rf_in_gospr_zamsvid_sostavsevi")
 async def query_ru_rf_in_gospr_zamsvid_sostavsevi(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = ['У вас родился ребёнок или Вы усыновили, приняли под опеку или попечительство ребенка?',
-                     'У Вас умер один из членов Вашей семьи?']
-    keyboards = [key_s['ru_rf_in_gospr_zamsvid_sostavsevi_rebenok_key'],
-                 key_s['ru_rf_in_gospr_zamsvid_sostavsevi_umer_key']]
+    message_texts = ['''1️⃣ У вас родился ребёнок или Вы усыновили, приняли под опеку или попечительство ребенка?
+2️⃣ У Вас умер один из членов Вашей семьи?''']
+    keyboards = [key_s['ru_rf_in_gospr_zamsvid_sostavsevi_rebenok_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -440,9 +444,9 @@ async def query_ru_rf_in_gospr_zamsvid_sostavsevi(callback_query: types.Callback
 @dp.callback_query_handler(text="ru_rf_in_gospr_zamsvid_sempoloshen")
 async def query_ru_rf_in_gospr_zamsvid_sempoloshen(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = ['Вы вступили в брак?', 'Вы расторгли брак?']
-    keyboards = [key_s['ru_rf_in_gospr_zamsvid_sempoloshen_brak_key'],
-                 key_s['ru_rf_in_gospr_zamsvid_sempoloshen_unbrak_key']]
+    message_texts = ['''1️⃣ Вы вступили в брак?
+2️⃣ Вы расторгли брак?''']
+    keyboards = [key_s['ru_rf_in_gospr_zamsvid_sempoloshen_brak_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -451,7 +455,7 @@ async def query_ru_rf_in_gospr_zamsvid_sempoloshen(callback_query: types.Callbac
 async def query_ru_rf_in_gospr_zamsvid_poteryali(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_poteryli_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -460,7 +464,7 @@ async def query_ru_rf_in_gospr_zamsvid_poteryali(callback_query: types.CallbackQ
 async def query_ru_rf_in_gospr_zamsvid_smenaystdannyh(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_smenadanyh_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -469,7 +473,7 @@ async def query_ru_rf_in_gospr_zamsvid_smenaystdannyh(callback_query: types.Call
 async def query_ru_rf_in_gospr_zamsvid_svidoshibky(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_smenadanyh_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -478,7 +482,7 @@ async def query_ru_rf_in_gospr_zamsvid_svidoshibky(callback_query: types.Callbac
 async def query_ru_rf_in_gospr_zamsvid_svidneprigodno(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_smenadanyh_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -487,7 +491,7 @@ async def query_ru_rf_in_gospr_zamsvid_svidneprigodno(callback_query: types.Call
 async def query_ru_rf_in_gospr_zamsvid_svidsispravl(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_smenadanyh_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -496,7 +500,7 @@ async def query_ru_rf_in_gospr_zamsvid_svidsispravl(callback_query: types.Callba
 async def query_ru_rf_in_gospr_zamsvid_utratastatusa(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_smenadanyh_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -505,7 +509,7 @@ async def query_ru_rf_in_gospr_zamsvid_utratastatusa(callback_query: types.Callb
 async def query_ru_rf_in_gospr_zamsvid_sostavsevi_rebenok(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_rebenok_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_sostavsevi_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -514,7 +518,7 @@ async def query_ru_rf_in_gospr_zamsvid_sostavsevi_rebenok(callback_query: types.
 async def query_ru_rf_in_gospr_zamsvid_sostavsevi_umer(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_umer_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_sostavsevi_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -523,7 +527,7 @@ async def query_ru_rf_in_gospr_zamsvid_sostavsevi_umer(callback_query: types.Cal
 async def query_ru_rf_in_gospr_zamsvid_sempoloshen_brak(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_brak_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_sempoloshen_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -532,7 +536,31 @@ async def query_ru_rf_in_gospr_zamsvid_sempoloshen_brak(callback_query: types.Ca
 async def query_ru_rf_in_gospr_zamsvid_sempoloshen_unbrak(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [Text_serv.gosprog_unbrak_txt]
-    keyboards = [None]
+    keyboards = [key_s["ru_rf_in_gospr_zamsvid_sempoloshen_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_rf_in_gospr_zaksroksvid")
+async def query_ru_rf_in_gospr_zaksroksvid(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [Text_serv.gosprog_txt5]
+    keyboards = [key_s["ru_rf_in_gospr_home_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_rf_in_gospr_anulsvid")
+async def query_ru_rf_in_gospr_anulsvid(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [Text_serv.gosprog_txt6p1,Text_serv.gosprog_txt6p1]
+    keyboards = [key_s[None, "ru_rf_in_gospr_home_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_rf_in_gospr_mneotkazalevydat")
+async def query_ru_rf_in_gospr_mneotkazalevydat(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [Text_serv.gosprog_txt7]
+    keyboards = [key_s["ru_rf_in_gospr_home_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -540,12 +568,13 @@ async def query_ru_rf_in_gospr_zamsvid_sempoloshen_unbrak(callback_query: types.
 async def query_ru_ig(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        '<b>Где Вы сейчас находитесь?</b>                                                      ᅠ ᅠ ',
-        'В Российской Федерации                                         ᅠ ᅠ ',
-        '❌ За пределами Российской Федерации                                          ᅠ ᅠ ',
-        '❌ В пункте пропуска через Государственную границу Российской Федерации'
+f'''<b>Где Вы сейчас находитесь?</b>
+В Российской Федерации
+❌ За пределами Российской Федерации
+❌ В пункте пропуска через Государственную границу Российской Федерации
+{Text_serv.ru_ancor_bottom}        '''
     ]
-    keyboards = [None, key_s['ru_ig_in_key'], key_s['ru_ig_out_key'], key_s['ru_ig_board_key']]
+    keyboards = [key_s['ru_ig_in_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -553,18 +582,19 @@ async def query_ru_ig(callback_query: types.CallbackQuery):
 async def query_ru_ig_in(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        '<b>Выберите характер вашей ситуации</b>',
-        'Я хочу стать гражданином России                  ᅠ ᅠ ',
-        '❌ Я - Участник Государственной программы по оказанию содействия добровольному преселению в Российскую Федерацию соотечественников, проживающих за рубежом',
-        '❌ Я намерен постоянно проживать в России',
-        '❌ Я нахожусь с краткосрочным визитом в России',
-        '❌ Я учусь в образовательной организации или готовлюсь к поступлению',
-        '❌ Я работаю по найму или буду трудоустраиваться',
-        '❌ Я ищу убежище в Российской Федерации',
-        '❌ Мне нужна помощь с постановкой на миграционный учет, а также с регистрацией по месту пребывания или изменения места пребывания',
-        '❌ У меня возникли проблемы с пребыванием в России'
+f'''<b>Выберите характер вашей ситуации</b>'
+Я хочу стать гражданином России                  ᅠ ᅠ 
+{Text_serv.ru_ancor_bottom} '''
+        # '❌ Я - Участник Государственной программы по оказанию содействия добровольному преселению в Российскую Федерацию соотечественников, проживающих за рубежом',
+        # '❌ Я намерен постоянно проживать в России',
+        # '❌ Я нахожусь с краткосрочным визитом в России',
+        # '❌ Я учусь в образовательной организации или готовлюсь к поступлению',
+        # '❌ Я работаю по найму или буду трудоустраиваться',
+        # '❌ Я ищу убежище в Российской Федерации',
+        # '❌ Мне нужна помощь с постановкой на миграционный учет, а также с регистрацией по месту пребывания или изменения места пребывания',
+        # '❌ У меня возникли проблемы с пребыванием в России'
     ]
-    keyboards = [None, key_s['ru_ig_in_sitizen_key'], None, None, None, None, None, None, None, None]
+    keyboards = [key_s['ru_ig_in_sitizen_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -572,12 +602,13 @@ async def query_ru_ig_in(callback_query: types.CallbackQuery):
 async def query_ru_ig_in_sitizen(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>{Text_serv.sitizen_txt1}</b>                                                      ᅠ ᅠ ',
-        'Получить персональную инструкцию                                         ᅠ ᅠ ',
-        'Полезная информация',
-        'Как принести Присягу гражданина Российской Федерации'
+f'''<b>{Text_serv.sitizen_txt1}</b>
+1️⃣ Получить персональную инструкцию
+2️⃣ Полезная информация
+3️⃣ Как принести Присягу гражданина Российской Федерации
+{Text_serv.ru_ancor_bottom} '''
 ]
-    keyboards = [None, key_s['ru_ig_in_sitizen_manual_key'], key_s['ru_ig_in_sitizen_inf_key'], key_s['ru_ig_in_sitizen_pris_key'],]
+    keyboards = [key_s['ru_ig_in_sitizen_manual_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -585,10 +616,12 @@ async def query_ru_ig_in_sitizen(callback_query: types.CallbackQuery):
 async def query_ru_ig_in_sitizen_manual(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>У вас есть?</b>                                                      ᅠ ᅠ ',
-        'Вид на жительство в Российской Федерации'
+f'''<b>У вас есть?</b>                                                      ᅠ ᅠ 
+Вид на жительство в Российской Федерации
+{Text_serv.ru_ancor_bottom} 
+'''
 ]
-    keyboards = [None, key_s['ru_ig_in_sitizen_manual_vng_key']]
+    keyboards = [key_s['ru_ig_in_sitizen_manual_vng_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -596,10 +629,12 @@ async def query_ru_ig_in_sitizen_manual(callback_query: types.CallbackQuery):
 async def query_ru_ig_in_sitizen_manual_vng_yes(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>У вас есть?</b>                                                      ᅠ ᅠ ',
-        'Сертификат носителя русского языка'
+f'''<b>У вас есть?</b>                                                      ᅠ ᅠ 
+Сертификат носителя русского языка
+{Text_serv.ru_ancor_bottom} 
+'''
 ]
-    keyboards = [None, key_s['ru_ig_in_sitizen_manual_vng+sertrus_key']]
+    keyboards = [key_s['ru_ig_in_sitizen_manual_vng+sertrus_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -607,9 +642,10 @@ async def query_ru_ig_in_sitizen_manual_vng_yes(callback_query: types.CallbackQu
 async def query_ru_ig_in_sitizen_manual_vngsertrus_yes(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>{Text_serv.sitizen_man1}</b>                                                      ᅠ ᅠ ',
+        Text_serv.sitizen_man1p1,
+        Text_serv.sitizen_man1p2
         ]
-    keyboards = [None]
+    keyboards = [None, key_s["ru_ig_in_sitizen_manual_vng+sertrus_yes_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -617,10 +653,12 @@ async def query_ru_ig_in_sitizen_manual_vngsertrus_yes(callback_query: types.Cal
 async def query_ru_ig_in_sitizen_manual_vngsertrus_no(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>У вас есть?</b>                                                      ᅠ ᅠ ',
-        'Свидетельство участника Госпрограммы'
+f'''<b>У вас есть?</b>                                                      ᅠ ᅠ 
+Свидетельство участника Госпрограммы
+{Text_serv.ru_ancor_bottom} 
+'''
 ]
-    keyboards = [None, key_s['ru_ig_in_sitizen_manual_vng+gosprog_key']]
+    keyboards = [key_s['ru_ig_in_sitizen_manual_vng+gosprog_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -628,9 +666,9 @@ async def query_ru_ig_in_sitizen_manual_vngsertrus_no(callback_query: types.Call
 async def query_ru_ig_in_sitizen_manual_vnggosprog_yes(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>{Text_serv.sitizen_man2}</b>                                                      ᅠ ᅠ ',
+        Text_serv.sitizen_man2
         ]
-    keyboards = [None]
+    keyboards = [key_s["ru_ig_in_sitizen_manual_vng+gosprog_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -638,18 +676,17 @@ async def query_ru_ig_in_sitizen_manual_vnggosprog_yes(callback_query: types.Cal
 async def query_ru_ig_in_sitizen_manual_vnggosprog_no(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        '<b>Перед Вами перечень самых распространенных оснований, позволяющих получить гражданство в упрощенном порядке</b>',
-        'Я являюсь гражданином Украины, республики Беларусь, Республики Молдова, республики Казахстан или Кыргызской Республики',
-        '''Мой близкий родственник - гражданин России.
-(близкими родственниками являются: родители, дети, родные братья и сестры, бабушки, дедушки,внуки''',
-        'Я владею русским языком как родным и готов пройти процедуру признания носителем русского языка',
-        'Являюсь лицом без гражданства и ранее состял в гражданстве СССР',
-        "Родился на территории РСФСР и ранее состоял в гражданстве бывшего СССР",
-        "Мне ничего из вышеперечисленного не подходит"
+f'''<b>Перед Вами перечень самых распространенных оснований, позволяющих получить гражданство в упрощенном порядке</b>
+1️⃣ Я являюсь гражданином Украины, республики Беларусь, Республики Молдова, республики Казахстан или Кыргызской Республики.
+2️⃣ Мой близкий родственник - гражданин России.
+(близкими родственниками являются: родители, дети, родные братья и сестры, бабушки, дедушки,внуки
+3️⃣ Я владею русским языком как родным и готов пройти процедуру признания носителем русского языка.
+4️⃣ Являюсь лицом без гражданства и ранее состял в гражданстве СССР.
+5️⃣ Родился на территории РСФСР и ранее состоял в гражданстве бывшего СССР.
+6️⃣ Мне ничего из вышеперечисленного не подходит.
+{Text_serv.ru_ancor_bottom}'''
         ]
-    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_sng_key"], key_s["ru_ig_in_sitizen_vng_only_blizkorod_key"],
-                 key_s["ru_ig_in_sitizen_vng_only_vladeyrus_key"], key_s["ru_ig_in_sitizen_vng_only_lbgussr_key"],
-                 key_s["ru_ig_in_sitizen_vng_only_borninussr_key"], key_s["ru_ig_in_sitizen_vng_only_nothing_key"]]
+    keyboards = [key_s["ru_ig_in_sitizen_vng_only_sng_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -657,7 +694,8 @@ async def query_ru_ig_in_sitizen_manual_vnggosprog_no(callback_query: types.Call
 async def query_ru_ig_in_sitizen_vng_only_sng(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>Вы в прошлом состяли в гражданстве Белорусской ССР, Казахской ССР, или Киргизской ССР и одновременно в гражданстве бывшего СССР, либо родились или проживали на территории одной из указанных республик приобретаемого гражданства РСФСР до 21 декабря 1991 года</b>',
+        f'''<b>Вы в прошлом состяли в гражданстве Белорусской ССР, Казахской ССР, или Киргизской ССР и одновременно в гражданстве бывшего СССР, либо родились или проживали на территории одной из указанных республик приобретаемого гражданства РСФСР до 21 декабря 1991 года</b>
+{Text_serv.ru_ancor_bottom} '''
 
 ]
     keyboards = [key_s['ru_ig_in_sitizen_vng_only_sng_yn_key']]
@@ -670,7 +708,7 @@ async def ru_ig_in_sitizen_vng_only_sng_yes(callback_query: types.CallbackQuery)
     message_texts = [
         Text_serv.sitizen_man3
     ]
-    keyboards = [None]
+    keyboards = [key_s["ru_ig_in_sitizen_vng_only_sng_back1_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -678,7 +716,7 @@ async def ru_ig_in_sitizen_vng_only_sng_yes(callback_query: types.CallbackQuery)
 async def ru_ig_in_sitizen_vng_only_sng_no(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>{Text_serv.sitizen_txt2}</b>'
+        Text_serv.sitizen_txt2
     ]
     keyboards = [key_s['ru_ig_in_sitizen_vng_only_sng_blizrod_yn_key']]
     await delete_previous_messages(user_id, message_storage)
@@ -688,7 +726,7 @@ async def ru_ig_in_sitizen_vng_only_sng_no(callback_query: types.CallbackQuery):
 async def ru_ig_in_sitizen_vng_only_sng_yes(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>{Text_serv.sitizen_txt2}</b>'
+        Text_serv.sitizen_txt2
     ]
     keyboards = [None, key_s['ru_ig_in_sitizen_vng_only_sng_blizrod_yn_key']]
     await delete_previous_messages(user_id, message_storage)
@@ -698,20 +736,31 @@ async def ru_ig_in_sitizen_vng_only_sng_yes(callback_query: types.CallbackQuery)
 async def ru_ig_in_sitizen_vng_only_sng_blizrod_yes(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        Text_serv.sitizen_man4
+        Text_serv.sitizen_man4p1,
+        Text_serv.sitizen_man4p2
     ]
-    keyboards = [None]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_sng_no_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_sng_blizrod_no")
+async def ru_ig_in_sitizen_vng_only_sng_blizrod_no(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man5p1,
+        Text_serv.sitizen_man5p2
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_sng_no_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
 @dp.callback_query_handler(text="ru_ig_in_sitizen_inf")
 async def query_ru_ig_in_sitizen_inf(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>{Text_serv.sitizen_txt1}</b>                                                    ᅠ ᅠ ',
+        Text_serv.sitizen_txt3
 ]
-    keyboards = [None]
+    keyboards = [key_s["ru_ig_in_sitizen1_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
@@ -720,9 +769,209 @@ async def query_ru_ig_in_sitizen_inf(callback_query: types.CallbackQuery):
 async def query_ru_ig_in_sitizen_pris(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     message_texts = [
-        f'<b>{Text_serv.sitizen_txt1}</b>                                                      ᅠ ᅠ ',
+        Text_serv.sitizen_txt4
+
 ]
-    keyboards = [None]
+    keyboards = [key_s["ru_ig_in_sitizen1_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_blizkorod")
+async def query_ru_ig_in_sitizen_vng_only_blizkorod(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''1️⃣ Состою не менее трех лет в браке с гражданином Российской Федерации, проживающим на трерритории Российской Федерации.
+2️⃣ Состою в браке с гражданином Российской Федерации, проживающим на трерритории Российской Федерации и имею в этом браке общих детей (до 18 лет).
+3️⃣ Один из родителейгражданин Российской Федерации и проживает на территории Российской Федерации.
+4️⃣ Дееспособный сын или дочь достигли возраста 18 лет иявляются гражданами Российской Федерации.
+5️⃣ Мой ребенок гражданин Российской Федерации, а другой родитель ребенка, являющийся гражданином Российской Федерации, умер либо решением суда вступившим в законную силу, признан безвестно отсутствующим, недееспособным или ограничен в родительских правах.
+6️⃣ Сын или дочь, достигшие 18 лет, признаны недееспособными. 
+<i>(Дети являются гражданами РФ, решение суда вступило в законную силу, а другой родитель ребенка, являющийся гражданином Российской Федерации, умер либо решением суда вступившим в законную силу, признан безвестно отсутствующим, недееспособным или ограничен в родительских правах.</i>
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s["ru_ig_sitizen_vng_only_blizrod"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_blizrod_3brak")
+async def query_ru_ig_in_sitizen_vng_only_blizrod_3brak(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man6p1,
+        Text_serv.sitizen_man6p2
+]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_blizrod_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_blizrod_brakdeti")
+async def query_ru_ig_in_sitizen_vng_only_blizrod_brakdeti(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man7p1,
+        Text_serv.sitizen_man7p2
+]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_blizrod_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_blizrod_roditeli")
+async def query_ru_ig_in_sitizen_vng_only_blizrod_poditeli(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man8p1,
+        Text_serv.sitizen_man8p2
+]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_blizrod_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_blizrod_deerebenok")
+async def query_ru_ig_in_sitizen_vng_only_blizrod_deesrebenok(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man9p1,
+        Text_serv.sitizen_man9p2
+]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_blizrod_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_blizrod_rebenok+1roditel")
+async def query_ru_ig_in_sitizen_vng_only_blizrod_rebenokroditel(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man9p1,
+        Text_serv.sitizen_man9p2
+]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_blizrod_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_blizrod_nedeesrebenok")
+async def query_ru_ig_in_sitizen_vng_only_blizrod_nedeesrebenok(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man9p1,
+        Text_serv.sitizen_man9p2]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_blizrod_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_vladeyrus")
+async def query_ru_ig_in_sitizen_vng_only_vladeyrus(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man12]
+    keyboards = [key_s["ru_ig_in_sitizen_vng_only_sng_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_lbgussr")
+async def query_ru_ig_in_sitizen_vng_only_lbgussr(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man13p1, Text_serv.sitizen_man13p1
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_sng_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_borninussr")
+async def query_ru_ig_in_sitizen_vng_only_borninussr(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man9p1, Text_serv.sitizen_man9p1
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_sng_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_nothing")
+async def query_ru_ig_in_sitizen_vng_only_nothing(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        f'''<b>Посмотрите, может что-то из этого Вам подходит</b>
+1️⃣ Ветеран Великой Отечественной войны и ранее состоял в гражданстве бывшего СССР.
+2️⃣ Ранее состоял в гражданстве РФ (оформил выход из Российского гражданства).
+3️⃣ Получил после 1 июля 202 года профессиональное образование в России.
+4️⃣ Являюсь индивидуальным предпринимателем и осуществляю предпринимательскую деятельность на территории РФ не менее трех лет.
+5️⃣ Являюсь инвестором.
+6️⃣ Квалифицированный специалист.
+7️⃣ Нетрудоспособный гражанин, прибыл в РФ из государства, входившее в состав СССР, и зарегистрирован по месту жительства в Российской Федерации по состоянию на 1июля 2002 года.
+8️⃣ Мне, увы, ничего из этого не подходит
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s["ru_ig_sitizen_vng_only_nothing_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_vov")
+async def query_ru_ig_in_sitizen_vng_only_vov(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man15p1, Text_serv.sitizen_man15p2
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_nothing_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_raneerf")
+async def query_ru_ig_in_sitizen_vng_only_raneerf(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man16
+    ]
+    keyboards = [key_s["ru_ig_in_sitizen_vng_only_nothing_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_profobraz")
+async def query_ru_ig_in_sitizen_vng_only_profobraz(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man17p1, Text_serv.sitizen_man17p2
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_nothing_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_ip")
+async def query_ru_ig_in_sitizen_vng_only_ip(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man18p1, Text_serv.sitizen_man18p2
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_nothing_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_investor")
+async def query_ru_ig_in_sitizen_vng_only_investor(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man19p1, Text_serv.sitizen_man19p2
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_nothing_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_kvspec")
+async def query_ru_ig_in_sitizen_vng_only_kvspec(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man20p1, Text_serv.sitizen_man20p2
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_nothing_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+@dp.callback_query_handler(text="ru_ig_in_sitizen_vng_only_netrud")
+async def query_ru_ig_in_sitizen_vng_only_netrud(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [
+        Text_serv.sitizen_man21p1, Text_serv.sitizen_man21p2
+    ]
+    keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_nothing_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
