@@ -311,9 +311,9 @@ key_s = {
     "ru_ig_in_sitizen_vng_only_sng_back_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_sng_back"]),
 
     "ru_ig_sitizen_vng_only_nothing_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_vov"], buttons["ru_ig_in_sitizen_vng_only_raneerf"],
-                                                          buttons["ru_ig_in_sitizen_vng_only_profobraz"],buttons["ru_ig_in_sitizen_vng_only_ip"],
-                                                          buttons["ru_ig_in_sitizen_vng_only_investor"],buttons["ru_ig_in_sitizen_vng_only_kvspec"],
-                                                          buttons["ru_ig_in_sitizen_vng_only_netrud"],buttons[buttons["ru_ig_in_sitizen_vng_only_sng_back"]],),
+                                                          buttons["ru_ig_in_sitizen_vng_only_profobraz"], buttons["ru_ig_in_sitizen_vng_only_ip"],
+                                                          buttons["ru_ig_in_sitizen_vng_only_investor"], buttons["ru_ig_in_sitizen_vng_only_kvspec"],
+                                                          buttons["ru_ig_in_sitizen_vng_only_netrud"], buttons["ru_ig_in_sitizen_vng_only_sng_back"]),
 
     "ru_ig_in_sitizen_vng_only_nothing_back_key": create_keyboard(buttons["ru_ig_in_sitizen_vng_only_nothing_back"])
 
