@@ -10,6 +10,7 @@ from keyboards_serv import key_s, underline_keyboard, confirm_keyboard
 token = TOKONBOT
 group_id = MESSAGE_GROUP
 token_post = TOKONBOT_POST
+group_id_guvm ='-842554057'
 
 bot = Bot(token=token, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -974,6 +975,17 @@ async def query_ru_ig_in_sitizen_vng_only_netrud(callback_query: types.CallbackQ
     keyboards = [None, key_s["ru_ig_in_sitizen_vng_only_nothing_back_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+async def send_startup_temp():
+    await bot.send_message(chat_id=group_id_guvm, text='Я онлайн')
+
+async def on_startup(dp):
+    await send_startup_temp()
+
+async def send_shutdown_temp():
+    await bot.send_message(chat_id=group_id_guvm, text='Я офлайн')
+
+async def on_shutdown(dp):
+    await send_shutdown_temp()
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
@@ -982,4 +994,4 @@ if __name__ == '__main__':
     user_languages = {}
     from aiogram import executor
 
-    executor.start_polling(dp, skip_updates=True)
+    executor.start_polling(dp, skip_updates=True, on_startup=on_startup, on_shutdown=on_shutdown)

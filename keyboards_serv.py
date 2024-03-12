@@ -5,8 +5,9 @@ def create_button(text, callback_data):
 
 def create_keyboard(*buttons, row=4):
     keyboard = InlineKeyboardMarkup(row_width=row, resize_keyboard=True, one_time_keyboard=True)
-    for button in buttons:
-        keyboard.add(button)
+    keyboard.row(*buttons)
+    # for button in buttons:
+    #     keyboard.add(button)
     return keyboard
 
 
