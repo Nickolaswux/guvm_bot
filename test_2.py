@@ -10,7 +10,7 @@ from keyboards_serv import key_s, underline_keyboard, confirm_keyboard
 token = TOKONBOT
 group_id = MESSAGE_GROUP
 token_post = TOKONBOT_POST
-group_id_guvm ='-842554057'
+group_id_guvm ='-1002022336658'
 
 bot = Bot(token=token, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -190,8 +190,221 @@ async def query_ru_rf_in_pasp_faq(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text="ru_rf_in_pasp_sit")
 async def query_ru_rf_in_pasp_sit(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = ['Раздел в процессе заполнения']
+    message_texts = [f'''
+1️⃣ Я хочу оформить паспорт
+2️⃣ Украли паспорт, что делать?
+3️⃣ Я потерял паспорт, что делать?
+4️⃣ Я просрочил замену паспорта
+5️⃣ Отказали в выдаче
+{Text_serv.ru_ancor_bottom}
+''']
     keyboards = [key_s['ru_rf_in_pasp_1_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen")
+async def query_ru_rf_in_pasp_sit_oformlen(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+1️⃣ У меня изменилась фамилия, имя или отчество.
+2️⃣ Паспорт испорчен
+3️⃣ У меня изменилась внешность
+4️⃣ Замена паспорта гражданина СССР
+5️⃣ Исполнилось 20 или 45 лет
+6️⃣ Получение паспорта в 14 лет впервые
+7️⃣ Я обнаружил ошибку в паспорте
+8️⃣ У меня изменилось место или дата рождения
+
+<b>Что делать, если причин несколько?</b>
+Если вы одновременно сменили ФИО и вам исполнилось 20 или 45 лет, выберите 1️⃣ «Изменились фамилия, имя или отчество»
+Если паспорт испорчен и вам исполнилось 20 или 45 лет, у вас изменилась внешность или закончилось место для штампов, выберите 2️⃣ «Паспорт испорчен»
+В остальных случаях подать заявление можно только лично.
+Запишитесь на приём в МФЦ или в МВД для оформления паспорта
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_tf_pasp_sit_oformlen_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-изменились ФИО
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_fio")
+async def query_ru_rf_in_pasp_sit_oformlen_fio(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+1️⃣ Замена ФИО в связи с заключением брака
+2️⃣ Замена ФИО в связи с зрасторжением брака
+3️⃣ Другие причины
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_sit_oformlen_fio_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-изменились ФИО-брак
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_fio_brak")
+async def query_ru_rf_in_pasp_sit_oformlen_fio_brak(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit1}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_fio_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-изменились ФИО-развод
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_fio_unbrak")
+async def query_ru_rf_in_pasp_sit_oformlen_fio_unbrak(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit2}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_fio_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-изменились ФИО-другие причины
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_fio_another")
+async def query_ru_rf_in_pasp_sit_oformlen_fio_another(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit3}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_fio_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-паспорт испорчен
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_neprigoden")
+async def query_ru_rf_in_pasp_sit_neprigoden(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit4}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-смена внешности
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_vneshnost")
+async def query_ru_rf_in_pasp_sit_oformlen_vneshnost(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit5}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-паспорт cccp
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_ussr")
+async def query_ru_rf_in_pasp_sit_oformlen_ussr(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit6}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-20-45
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_2045")
+async def query_ru_rf_in_pasp_sit_oformlen_2045(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit7}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-14 впервые
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_14")
+async def query_ru_rf_in_pasp_sit_oformlen_14(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit8}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-ошибка в паспорте
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_mistake")
+async def query_ru_rf_in_pasp_sit_oformlen_mistake(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit9}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-изменилось место или дата рождениЯ
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_izmdata")
+async def query_ru_rf_in_pasp_sit_oformlen_izmdata(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit10}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-украли паспорт
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_ukraly")
+async def query_ru_rf_in_pasp_sit_ukraly(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit11}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_pasp_sit_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-потерял паспорт
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_poteral")
+async def query_ru_rf_in_pasp_sit_poteral(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit12}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_pasp_sit_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации- просрочил подачу
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_prosrochil")
+async def query_ru_rf_in_pasp_sit_prosrochil(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit13}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_pasp_sit_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации- отказали
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_otkaz")
+async def query_ru_rf_in_pasp_sit_otkaz(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit14}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_pasp_sit_back_key']]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 

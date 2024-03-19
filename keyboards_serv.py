@@ -4,10 +4,10 @@ def create_button(text, callback_data):
     return InlineKeyboardButton(text, callback_data=callback_data)
 
 def create_keyboard(*buttons, row=4):
-    keyboard = InlineKeyboardMarkup(row_width=row, resize_keyboard=True, one_time_keyboard=True)
-    keyboard.row(*buttons)
-    # for button in buttons:
-    #     keyboard.add(button)
+    keyboard = InlineKeyboardMarkup(row=row, resize_keyboard=True, one_time_keyboard=True)
+    # keyboard.row(*buttons)
+    for button in buttons:
+        keyboard.add(button)
     return keyboard
 
 
@@ -50,7 +50,30 @@ buttons = {
     "ru_rf_in_pasp_faq": create_button("1️⃣", "ru_rf_in_pasp_faq"),
     "ru_rf_in_pasp_sit": create_button("2️⃣", "ru_rf_in_pasp_sit"),
     "ru_rf_in_pasp_back": create_button("🔙", "ru_rf_in"),
+
+    "ru_rf_in_pasp_sit_oformlen": create_button("1️⃣", "ru_rf_in_pasp_sit_oformlen"),
+    "ru_rf_in_pasp_sit_ukraly": create_button("2️⃣", "ru_rf_in_pasp_sit_ukraly"),
+    "ru_rf_in_pasp_sit_poteral": create_button("3️⃣", "ru_rf_in_pasp_sit_poteral"),
+    "ru_rf_in_pasp_sit_prosrochil": create_button("4️⃣", "ru_rf_in_pasp_sit_prosrochil"),
+    "ru_rf_in_pasp_sit_otkaz": create_button("5️⃣", "ru_rf_in_pasp_sit_otkaz"),
     "ru_rf_in_pasp_1_back": create_button("🔙", "ru_rf_in_pasp"),
+
+    "ru_rf_in_pasp_sit_oformlen_fio": create_button("1️⃣", "ru_rf_in_pasp_sit_oformlen_fio"),
+    "ru_rf_in_pasp_sit_oformlen_neprigoden": create_button("2️⃣", "ru_rf_in_pasp_sit_oformlen_neprigoden"),
+    "ru_rf_in_pasp_sit_oformlen_vneshnost": create_button("3️⃣", "ru_rf_in_pasp_sit_oformlen_vneshnost"),
+    "ru_rf_in_pasp_sit_oformlen_ussr": create_button("4️⃣", "ru_rf_in_pasp_sit_oformlen_ussr"),
+    "ru_rf_in_pasp_sit_oformlen_2045": create_button("5️⃣", "ru_rf_in_pasp_sit_oformlen_2045"),
+    "ru_rf_in_pasp_sit_oformlen_14": create_button("6️⃣", "ru_rf_in_pasp_sit_oformlen_14"),
+    "ru_rf_in_pasp_sit_oformlen_mistake": create_button("7️⃣", "ru_rf_in_pasp_sit_oformlen_mistake"),
+    "ru_rf_in_pasp_sit_oformlen_izmdata": create_button("8️⃣", "ru_rf_in_pasp_sit_oformlen_izmdata"),
+    "ru_rf_in_pasp_sit_back": create_button("🔙", "ru_rf_in_pasp_sit"),
+
+    "ru_rf_in_pasp_sit_oformlen_fio_brak": create_button("1️⃣", "ru_rf_in_pasp_sit_oformlen_fio_brak"),
+    "ru_rf_in_pasp_sit_oformlen_fio_unbrak": create_button("2️⃣", "ru_rf_in_pasp_sit_oformlen_fio_unbrak"),
+    "ru_rf_in_pasp_sit_oformlen_another": create_button("3️⃣", "ru_rf_in_pasp_sit_oformlen_fio_another"),
+    "ru_rf_in_pasp_sit_oformlen_back": create_button("🔙", "ru_rf_in_pasp_sit_oformlen"),
+
+    "ru_rf_in_pasp_sit_oformlen_fio_back": create_button("🔙", "ru_rf_in_pasp_sit_oformlen_fio"),
 
     "ru_rf_in_zp_faq": create_button("1️⃣", "ru_rf_in_zp_faq"),
     "ru_rf_in_zp_sit": create_button("2️⃣", "ru_rf_in_zp_sit"),
@@ -201,7 +224,25 @@ key_s = {
 
     "ru_rf_in_pasp_faq_key": create_keyboard(buttons["ru_rf_in_pasp_faq"], buttons["ru_rf_in_pasp_sit"], buttons['ru_rf_in_pasp_back']),
 
-    "ru_rf_in_pasp_1_back_key": create_keyboard(buttons['ru_rf_in_pasp_1_back']),
+    "ru_rf_in_pasp_1_back_key": create_keyboard( buttons["ru_rf_in_pasp_sit_oformlen"],
+                                                buttons["ru_rf_in_pasp_sit_ukraly"], buttons["ru_rf_in_pasp_sit_poteral"],
+                                                buttons["ru_rf_in_pasp_sit_prosrochil"], buttons["ru_rf_in_pasp_sit_otkaz"],
+                                                 buttons['ru_rf_in_pasp_1_back'],),
+
+    "ru_tf_pasp_sit_oformlen_key": create_keyboard(buttons["ru_rf_in_pasp_sit_oformlen_fio"], buttons["ru_rf_in_pasp_sit_oformlen_neprigoden"],
+                                                   buttons["ru_rf_in_pasp_sit_oformlen_vneshnost"], buttons["ru_rf_in_pasp_sit_oformlen_ussr"],
+                                                   buttons["ru_rf_in_pasp_sit_oformlen_2045"], buttons["ru_rf_in_pasp_sit_oformlen_14"],
+                                                   buttons["ru_rf_in_pasp_sit_oformlen_mistake"], buttons["ru_rf_in_pasp_sit_oformlen_izmdata"],
+                                                   buttons["ru_rf_in_pasp_sit_back"]),
+    "ru_rf_pasp_sit_back_key": create_keyboard(buttons["ru_rf_in_pasp_sit_back"]),
+
+    "ru_rf_sit_oformlen_fio_key": create_keyboard(buttons['ru_rf_in_pasp_sit_oformlen_fio_brak'], buttons['ru_rf_in_pasp_sit_oformlen_fio_unbrak'],
+                                                  buttons['ru_rf_in_pasp_sit_oformlen_another'], buttons['ru_rf_in_pasp_sit_oformlen_back'],),
+
+    "ru_rf_in_pasp_sit_oformlen_back_key": create_keyboard(buttons["ru_rf_in_pasp_sit_oformlen_back"]),
+
+    "ru_rf_in_pasp_sit_oformlen_fio_back_key": create_keyboard(buttons["ru_rf_in_pasp_sit_oformlen_fio_back"]),
+#     "ru_rf_in_pasp_sit_oformlen_back": create_button("🔙", "ru_rf_in_pasp_sit_oformlen"),
 
     "ru_rf_in_zp_faq_key": create_keyboard(buttons["ru_rf_in_zp_faq"], buttons["ru_rf_in_zp_sit"], buttons["ru_rf_in_zp_back"]),
 
