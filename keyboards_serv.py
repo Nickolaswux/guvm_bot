@@ -5,9 +5,9 @@ def create_button(text, callback_data):
 
 def create_keyboard(*buttons, row=4):
     keyboard = InlineKeyboardMarkup(row_width=row, resize_keyboard=True, one_time_keyboard=True)
-    keyboard.row(*buttons)
-    # for button in buttons:
-    #     keyboard.add(button)
+    # keyboard.row(*buttons)
+    for button in buttons:
+        keyboard.add(button)
     return keyboard
 
 
@@ -57,6 +57,20 @@ buttons = {
     "ru_rf_in_zp_back": create_button("🔙", "ru_rf_in"),
     "ru_rf_in_zp_1_back": create_button("🔙", "ru_rf_in_zp"),
 
+    "ru_rf_in_zp_sit_oformlen": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen"),
+    "ru_rf_in_zp_sit_hran": create_button("2️⃣", "ru_rf_in_zp_sit_hran"),
+    "ru_rf_in_zp_sit_problem": create_button("3️⃣", "ru_rf_in_zp_sit_problem"),
+    "ru_rf_in_zp_sit_secondzp": create_button("4️⃣", "ru_rf_in_zp_sit_secondzp"),
+
+    "ru_rf_in_zp_sit_oformlen_new": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
+    "ru_rf_in_zp_sit_oformlen_old": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_old"),
+    "ru_rf_in_zp_sit_back": create_button("🔙", "ru_rf_in_zp_sit"),
+
+    "ru_rf_in_zp_sit_oformlen_new_me": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
+    "ru_rf_in_zp_sit_oformlen_new_baby": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
+    "ru_rf_in_zp_sit_oformlen_new_nedeesposob": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
+    "ru_rf_in_zp_sit_oformlen_new_anotherman": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
+    "ru_rf_in_zp_sit_oformlen_back": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
 
     "ru_rf_in_regliv_faq": create_button("1️⃣", "ru_rf_in_regliv_faq"),
     "ru_rf_in_regliv_sit": create_button("2️⃣", "ru_rf_in_regliv_sit"),
@@ -207,6 +221,16 @@ key_s = {
 
 
     "ru_rf_in_zp_1_back_key": create_keyboard(buttons['ru_rf_in_zp_1_back']),
+
+    "ru_rf_in_zp_sit_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen"], buttons["ru_rf_in_zp_sit_hran"],
+                                           buttons["ru_rf_in_zp_sit_problem"], buttons["ru_rf_in_zp_sit_secondzp"],
+                                           buttons["ru_rf_in_zp_1_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new"], buttons["ru_rf_in_zp_sit_oformlen_old"],
+                                                    buttons["ru_rf_in_zp_sit_back"]),
+    "ru_rf_in_zp_sit_oformlen_new_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_me"], buttons["ru_rf_in_zp_sit_oformlen_new_baby"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_new_nedeesposob"], buttons["ru_rf_in_zp_sit_oformlen_new_anotherman"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_back"]),
 
     "ru_rf_in_regliv_faq_key": create_keyboard(buttons["ru_rf_in_regliv_faq"], buttons["ru_rf_in_regliv_sit"], buttons["ru_rf_in_zp_back"]),
 
