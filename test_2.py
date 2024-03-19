@@ -437,8 +437,41 @@ async def query_ru_rf_in_zp_faq(callback_query: types.CallbackQuery):
 @dp.callback_query_handler(text="ru_rf_in_zp_sit")
 async def query_ru_rf_in_zp_sit(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    message_texts = ['Раздел в процессе наполнения']
-    keyboards = [key_s["ru_rf_in_zp_1_back_key"]]
+    message_texts = [f'''<b>В разделе жизненные ситуации Вы найдете инструкции</b>
+    
+1️⃣ Я хочу оформить загранпаспорт себе или своему ребенку
+2️⃣ Мне надо сдать загарнпаспорт на хранение
+3️⃣ У меня есть проблема с загранпаспортом
+4️⃣ Мне нужен второй загранпаспорт
+    {Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen")
+async def query_ru_rf_in_zp_sit_oformlen(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''{Text_serv.forein_pasp_sit1}
+1️⃣ Загранпаспорт нового поколения
+2️⃣ Загранпаспорт старого поколения
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_new")
+async def query_ru_rf_in_zp_sit_oformlen_new(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''<b>Кому требуется оформить загранпаспорт?</b>
+1️⃣ Мне
+2️⃣ Детям
+3️⃣ Недееспособному лицу
+4️⃣ Другому человеку
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_new_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
