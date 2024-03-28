@@ -89,11 +89,35 @@ buttons = {
     "ru_rf_in_zp_sit_oformlen_old": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_old"),
     "ru_rf_in_zp_sit_back": create_button("🔙", "ru_rf_in_zp_sit"),
 
-    "ru_rf_in_zp_sit_oformlen_new_me": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
-    "ru_rf_in_zp_sit_oformlen_new_baby": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
-    "ru_rf_in_zp_sit_oformlen_new_nedeesposob": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
-    "ru_rf_in_zp_sit_oformlen_new_anotherman": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
-    "ru_rf_in_zp_sit_oformlen_back": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
+    "ru_rf_in_zp_sit_oformlen_new_me": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new_me"),
+    "ru_rf_in_zp_sit_oformlen_new_baby": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_new_baby"),
+    "ru_rf_in_zp_sit_oformlen_new_nedeesposob": create_button("3️⃣", "ru_rf_in_zp_sit_oformlen_new_nedeesposob"),
+    "ru_rf_in_zp_sit_oformlen_new_anotherman": create_button("4️⃣", "ru_rf_in_zp_sit_oformlen_new_anotherman"),
+    "ru_rf_in_zp_sit_oformlen_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen"),
+
+    "ru_rf_in_zp_sit_oformlen_new_me_reglive": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new_me_reglive"),
+    "ru_rf_in_zp_sit_oformlen_new_me_live": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_new_me_live"),
+    "ru_rf_in_zp_sit_oformlen_new_me_templive": create_button("3️⃣", "ru_rf_in_zp_sit_oformlen_new_me_templive"),
+    "ru_rf_in_zp_sit_oformlen_new_me_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_new"),
+
+    "ru_rf_in_zp_sit_oformlen_new_me_reglive_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_new_me"),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_0-14": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new_baby_0-14"),
+    "ru_rf_in_zp_sit_oformlen_new_baby_14-18": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_new_baby_14-18"),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_0-14_reglive": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new_baby_0-14_reglive"),
+    "ru_rf_in_zp_sit_oformlen_new_baby_0-14_live": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_new_baby_0-14_live"),
+    "ru_rf_in_zp_sit_oformlen_new_baby_0-14_templive": create_button("3️⃣", "ru_rf_in_zp_sit_oformlen_new_baby_0-14_templive"),
+    "ru_rf_in_zp_sit_oformlen_new_baby_0-14_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_new_baby"),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_0-14_back1": create_button("🔙", "ru_rf_in_zp_sit_oformlen_new_baby_0-14"),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_14-18_reglive": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new_baby_14-18_reglive"),
+    "ru_rf_in_zp_sit_oformlen_new_baby_14-18_live": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_new_baby_14-18_live"),
+    "ru_rf_in_zp_sit_oformlen_new_baby_14-18_templive": create_button("3️⃣", "ru_rf_in_zp_sit_oformlen_new_baby_14-18_templive"),
+    "ru_rf_in_zp_sit_oformlen_new_baby_14-18_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_new_baby"),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_14-18_back1": create_button("🔙", "ru_rf_in_zp_sit_oformlen_new_baby_14-18"),
 
     "ru_rf_in_regliv_faq": create_button("1️⃣", "ru_rf_in_regliv_faq"),
     "ru_rf_in_regliv_sit": create_button("2️⃣", "ru_rf_in_regliv_sit"),
@@ -272,6 +296,28 @@ key_s = {
     "ru_rf_in_zp_sit_oformlen_new_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_me"], buttons["ru_rf_in_zp_sit_oformlen_new_baby"],
                                                         buttons["ru_rf_in_zp_sit_oformlen_new_nedeesposob"], buttons["ru_rf_in_zp_sit_oformlen_new_anotherman"],
                                                         buttons["ru_rf_in_zp_sit_oformlen_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_new_me_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_me_reglive"], buttons["ru_rf_in_zp_sit_oformlen_new_me_live"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_new_me_templive"], buttons["ru_rf_in_zp_sit_oformlen_new_me_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_new_me_reglive_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_me_reglive_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_baby_0-14"], buttons["ru_rf_in_zp_sit_oformlen_new_baby_14-18"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_new_me_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_0-14_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_baby_0-14_reglive"], buttons["ru_rf_in_zp_sit_oformlen_new_baby_0-14_live"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_new_baby_0-14_templive"], buttons["ru_rf_in_zp_sit_oformlen_new_baby_0-14_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_0-14_back_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_baby_0-14_back1"]),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_14-18_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_baby_14-18_reglive"], buttons["ru_rf_in_zp_sit_oformlen_new_baby_14-18_live"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_new_baby_14-18_templive"], buttons["ru_rf_in_zp_sit_oformlen_new_baby_14-18_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_new_baby_14-18_back_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_baby_14-18_back1"]),
+
+    "ru_rf_in_zp_sit_oformlen_new_back_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_me_back"]),
+
+    "ru_rf_in_zp_sit_back_key": create_keyboard(buttons[ "ru_rf_in_zp_sit_back"]),
 
     "ru_rf_in_regliv_faq_key": create_keyboard(buttons["ru_rf_in_regliv_faq"], buttons["ru_rf_in_regliv_sit"], buttons["ru_rf_in_zp_back"]),
 
