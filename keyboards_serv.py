@@ -31,7 +31,7 @@ buttons = {
     "ru_rf": create_button("1️⃣", "ru_rf"),
     "ru_ig": create_button("2️⃣", "ru_ig"),
     "ru_ukr": create_button("❌3️⃣", "ru_ukr"),
-    "ru_org": create_button("❌4️⃣", "ru_org"),
+    "ru_org": create_button("❌3️⃣", "ru_org"),
     #"ru_back": InlineKeyboardButton("🔙", commands = ['start']),
 
     "ru_rf_in": create_button("1️⃣", "ru_rf_in"),
@@ -66,6 +66,7 @@ buttons = {
     "ru_rf_in_pasp_sit_oformlen_14": create_button("6️⃣", "ru_rf_in_pasp_sit_oformlen_14"),
     "ru_rf_in_pasp_sit_oformlen_mistake": create_button("7️⃣", "ru_rf_in_pasp_sit_oformlen_mistake"),
     "ru_rf_in_pasp_sit_oformlen_izmdata": create_button("8️⃣", "ru_rf_in_pasp_sit_oformlen_izmdata"),
+    "ru_rf_in_pasp_sit_oformlen_sitizen": create_button("9️⃣", "ru_rf_in_pasp_sit_oformlen_sitizen"),
     "ru_rf_in_pasp_sit_back": create_button("🔙", "ru_rf_in_pasp_sit"),
 
     "ru_rf_in_pasp_sit_oformlen_fio_brak": create_button("1️⃣", "ru_rf_in_pasp_sit_oformlen_fio_brak"),
@@ -84,6 +85,9 @@ buttons = {
     "ru_rf_in_zp_sit_hran": create_button("2️⃣", "ru_rf_in_zp_sit_hran"),
     "ru_rf_in_zp_sit_problem": create_button("3️⃣", "ru_rf_in_zp_sit_problem"),
     "ru_rf_in_zp_sit_secondzp": create_button("4️⃣", "ru_rf_in_zp_sit_secondzp"),
+    "ru_rf_in_zp_vozvrat": create_button("Возврат с хранения", "ru_rf_in_zp_vozvrat"),
+    "ru_rf_in_zp_sit_hran1": create_button("Передача на хранение или изъятие", "ru_rf_in_zp_sit_hran"),
+    "ru_rf_in_zp_sit_problem1": create_button("Украли/потеря ЗП", "ru_rf_in_zp_sit_problem"),
 
     "ru_rf_in_zp_sit_oformlen_new": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_new"),
     "ru_rf_in_zp_sit_oformlen_old": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_old"),
@@ -118,6 +122,44 @@ buttons = {
     "ru_rf_in_zp_sit_oformlen_new_baby_14-18_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_new_baby"),
 
     "ru_rf_in_zp_sit_oformlen_new_baby_14-18_back1": create_button("🔙", "ru_rf_in_zp_sit_oformlen_new_baby_14-18"),
+
+    "ru_rf_in_zp_sit_oformlen_old_me": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_old_me"),
+    "ru_rf_in_zp_sit_oformlen_old_baby": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_old_baby"),
+    "ru_rf_in_zp_sit_oformlen_old_nedeesposob": create_button("3️⃣", "ru_rf_in_zp_sit_oformlen_old_nedeesposob"),
+    "ru_rf_in_zp_sit_oformlen_old_anotherman": create_button("4️⃣", "ru_rf_in_zp_sit_oformlen_old_anotherman"),
+
+
+    "ru_rf_in_zp_sit_oformlen_old_me_reglive": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_old_me_reglive"),
+    "ru_rf_in_zp_sit_oformlen_old_me_live": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_old_me_live"),
+    "ru_rf_in_zp_sit_oformlen_old_me_templive": create_button("3️⃣", "ru_rf_in_zp_sit_oformlen_old_me_templive"),
+    "ru_rf_in_zp_sit_oformlen_old_me_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_old"),
+
+    "ru_rf_in_zp_sit_oformlen_old_me_reglive_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_old_me"),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_0-14": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_old_baby_0-14"),
+    "ru_rf_in_zp_sit_oformlen_old_baby_14-18": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_old_baby_14-18"),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_0-14_reglive": create_button("1️⃣",
+                                                                    "ru_rf_in_zp_sit_oformlen_old_baby_0-14_reglive"),
+    "ru_rf_in_zp_sit_oformlen_old_baby_0-14_live": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_old_baby_0-14_live"),
+    "ru_rf_in_zp_sit_oformlen_old_baby_0-14_templive": create_button("3️⃣",
+                                                                     "ru_rf_in_zp_sit_oformlen_old_baby_0-14_templive"),
+    "ru_rf_in_zp_sit_oformlen_old_baby_0-14_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_old_baby"),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_0-14_back1": create_button("🔙", "ru_rf_in_zp_sit_oformlen_old_baby_0-14"),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_14-18_reglive": create_button("1️⃣", "ru_rf_in_zp_sit_oformlen_old_baby_14-18_reglive"),
+    "ru_rf_in_zp_sit_oformlen_old_baby_14-18_live": create_button("2️⃣", "ru_rf_in_zp_sit_oformlen_old_baby_14-18_live"),
+    "ru_rf_in_zp_sit_oformlen_old_baby_14-18_templive": create_button("3️⃣", "ru_rf_in_zp_sit_oformlen_old_baby_14-18_templive"),
+    "ru_rf_in_zp_sit_oformlen_old_baby_14-18_back": create_button("🔙", "ru_rf_in_zp_sit_oformlen_old_baby"),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_14-18_back1": create_button("🔙", "ru_rf_in_zp_sit_oformlen_old_baby_14-18"),
+
+    "ru_rf_in_zp_sit_problem_rf": create_button("1️⃣", "ru_rf_in_zp_sit_problem_rf"),
+    "ru_rf_in_zp_sit_problem_zagr": create_button("2️⃣", "ru_rf_in_zp_sit_problem_zagr"),
+
+    "ru_rf_in_zp_sit_oformlen_problem_back": create_button("🔙", "ru_rf_in_zp_sit_problem"),
+    "ru_rf_in_zp_sit_oformlen_txt": create_button("Оформление загранпаспорта", "ru_rf_in_zp_sit_oformlen"),
 
     "ru_rf_in_regliv_faq": create_button("1️⃣", "ru_rf_in_regliv_faq"),
     "ru_rf_in_regliv_sit": create_button("2️⃣", "ru_rf_in_regliv_sit"),
@@ -252,7 +294,7 @@ key_s = {
 
     "lang_key": create_keyboard(buttons["rus"], buttons["en"]),
 
-    "ru_rf_key": create_keyboard(buttons["ru_rf"], buttons["ru_ig"], buttons["ru_ukr"], buttons["ru_org"]),
+    "ru_rf_key": create_keyboard(buttons["ru_rf"], buttons["ru_ig"], buttons["ru_org"]),
 
 
     "ru_rf_in_key": create_keyboard(buttons["ru_rf_in"], buttons["ru_rf_out"], buttons['ru_rf_back']),
@@ -271,7 +313,7 @@ key_s = {
                                                    buttons["ru_rf_in_pasp_sit_oformlen_vneshnost"], buttons["ru_rf_in_pasp_sit_oformlen_ussr"],
                                                    buttons["ru_rf_in_pasp_sit_oformlen_2045"], buttons["ru_rf_in_pasp_sit_oformlen_14"],
                                                    buttons["ru_rf_in_pasp_sit_oformlen_mistake"], buttons["ru_rf_in_pasp_sit_oformlen_izmdata"],
-                                                   buttons["ru_rf_in_pasp_sit_back"]),
+                                                   buttons["ru_rf_in_pasp_sit_oformlen_sitizen"], buttons["ru_rf_in_pasp_sit_back"]),
     "ru_rf_pasp_sit_back_key": create_keyboard(buttons["ru_rf_in_pasp_sit_back"]),
 
     "ru_rf_sit_oformlen_fio_key": create_keyboard(buttons['ru_rf_in_pasp_sit_oformlen_fio_brak'], buttons['ru_rf_in_pasp_sit_oformlen_fio_unbrak'],
@@ -317,7 +359,53 @@ key_s = {
 
     "ru_rf_in_zp_sit_oformlen_new_back_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_new_me_back"]),
 
-    "ru_rf_in_zp_sit_back_key": create_keyboard(buttons[ "ru_rf_in_zp_sit_back"]),
+    "ru_rf_in_zp_sit_oformlen_old_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_old_me"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_old_baby"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_old_nedeesposob"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_old_anotherman"],
+                                                        buttons["ru_rf_in_zp_sit_oformlen_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_old_me_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_old_me_reglive"],
+                                                           buttons["ru_rf_in_zp_sit_oformlen_old_me_live"],
+                                                           buttons["ru_rf_in_zp_sit_oformlen_old_me_templive"],
+                                                           buttons["ru_rf_in_zp_sit_oformlen_old_me_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_old_me_reglive_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_old_me_reglive_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_old_baby_0-14"],
+                                                             buttons["ru_rf_in_zp_sit_oformlen_old_baby_14-18"],
+                                                             buttons["ru_rf_in_zp_sit_oformlen_old_me_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_0-14_key": create_keyboard(
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_0-14_reglive"],
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_0-14_live"],
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_0-14_templive"],
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_0-14_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_0-14_back_key": create_keyboard(
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_0-14_back1"]),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_14-18_key": create_keyboard(
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_14-18_reglive"],
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_14-18_live"],
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_14-18_templive"],
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_14-18_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_old_baby_14-18_back_key": create_keyboard(
+        buttons["ru_rf_in_zp_sit_oformlen_old_baby_14-18_back1"]),
+
+    "ru_rf_in_zp_sit_oformlen_old_back_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_old_me_back"]),
+
+    "ru_rf_in_zp_sit_back_key": create_keyboard(buttons["ru_rf_in_zp_vozvrat"], buttons[ "ru_rf_in_zp_sit_back"]),
+
+    "ru_rf_in_zp_sit_back1_key": create_keyboard(buttons["ru_rf_in_zp_sit_hran1"], buttons["ru_rf_in_zp_sit_back"]),
+
+    "ru_rf_in_zp_sit_problem_key": create_keyboard(buttons["ru_rf_in_zp_sit_problem_rf"], buttons["ru_rf_in_zp_sit_problem_zagr"],
+                                                   buttons["ru_rf_in_zp_sit_back"]),
+
+    "ru_rf_in_zp_sit_oformlen_problem_back_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_txt"], buttons["ru_rf_in_zp_sit_oformlen_problem_back"]),
+    "ru_rf_in_zp_sit_oformlen_problem_back1_key": create_keyboard(buttons["ru_rf_in_zp_sit_oformlen_txt"], buttons['ru_rf_in_zp_sit_problem1'], buttons["ru_rf_in_zp_sit_back"]),
+
 
     "ru_rf_in_regliv_faq_key": create_keyboard(buttons["ru_rf_in_regliv_faq"], buttons["ru_rf_in_regliv_sit"], buttons["ru_rf_in_zp_back"]),
 

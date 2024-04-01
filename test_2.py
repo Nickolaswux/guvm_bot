@@ -10,7 +10,7 @@ from keyboards_serv import key_s, underline_keyboard, confirm_keyboard
 token = TOKONBOT
 group_id = MESSAGE_GROUP
 token_post = TOKONBOT_POST
-group_id_guvm ='-842554057'
+group_id_guvm = '-842554057'
 
 bot = Bot(token=token, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
@@ -21,7 +21,7 @@ dp_post = Dispatcher(bot_post)
 async def send_and_save_messages(user_id, message_texts, keyboards, storage):
     message_ids = []
     for text, keyboard in zip(message_texts, keyboards):
-        message = await bot.send_message(chat_id=user_id, text=text, reply_markup=keyboard)
+        message = await bot.send_message(chat_id=user_id, text=text, reply_markup=keyboard, disable_web_page_preview=True)
         message_ids.append(message.message_id)
     storage[user_id] = message_ids
 
@@ -95,12 +95,11 @@ async def start_command(message: types.Message):
 async def choose_section_rus(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     user_languages[callback_query.from_user.id] = 'rus'
-    message_texts = [f'''<b>Выберите раздел:</b>
+    message_texts = [f'''<b>Выберите кнопку с цифрой интересующего раздела:</b>
     
-1️⃣ Для граждан России.
-2️⃣ Для иностранных граждан.
-❌3️⃣ Для граждан Украины, ЛНР, ДНР, Херсонской области, Запорожской области.
-❌4️⃣ Для Юридических лиц и индивидуальных предпринимателей.
+1️⃣ Гражданам России.
+2️⃣ Иностранным гражданам.
+❌3️⃣ Юридическим лицам и индивидуальным предпринимателям.
 {Text_serv.ru_ancor_bottom}''',
 
     ]
@@ -215,12 +214,13 @@ async def query_ru_rf_in_pasp_sit_oformlen(callback_query: types.CallbackQuery):
 6️⃣ Получение паспорта в 14 лет впервые
 7️⃣ Я обнаружил ошибку в паспорте
 8️⃣ У меня изменилось место или дата рождения
+9️⃣ Я получил гражданство
 
 <b>Что делать, если причин несколько?</b>
 Если вы одновременно сменили ФИО и вам исполнилось 20 или 45 лет, выберите 1️⃣ «Изменились фамилия, имя или отчество»
 Если паспорт испорчен и вам исполнилось 20 или 45 лет, у вас изменилась внешность или закончилось место для штампов, выберите 2️⃣ «Паспорт испорчен»
 В остальных случаях подать заявление можно только лично.
-Запишитесь на приём в МФЦ или в МВД для оформления паспорта
+Запишитесь на приём в <a href = "https://моидокументы.рф/search/mfc">МФЦ</a> или в <a href="https://мвд.рф/contacts/sites">удобное подразделение МВД</a> для оформления паспорта
 {Text_serv.ru_ancor_bottom}
 ''']
     keyboards = [key_s['ru_tf_pasp_sit_oformlen_key']]
@@ -360,6 +360,18 @@ async def query_ru_rf_in_pasp_sit_oformlen_izmdata(callback_query: types.Callbac
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
+#Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-оформить паспорт-получил гражданство
+@dp.callback_query_handler(text="ru_rf_in_pasp_sit_oformlen_sitizen")
+async def query_ru_rf_in_pasp_sit_oformlen_sitizen(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.iner_pasp_sit15}
+{Text_serv.ru_ancor_bottom}
+''']
+    keyboards = [key_s['ru_rf_in_pasp_sit_oformlen_back_key']]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
 #Русский язык - для граждан РФ - В Российской Федерации - Внутренний паспорт - Жизненные ситуации-украли паспорт
 @dp.callback_query_handler(text="ru_rf_in_pasp_sit_ukraly")
 async def query_ru_rf_in_pasp_sit_ukraly(callback_query: types.CallbackQuery):
@@ -440,8 +452,8 @@ async def query_ru_rf_in_zp_sit(callback_query: types.CallbackQuery):
     message_texts = [f'''<b>В разделе жизненные ситуации Вы найдете инструкции</b>
     
 1️⃣ Я хочу оформить загранпаспорт себе или своему ребенку
-2️⃣ Мне надо сдать загарнпаспорт на хранение
-3️⃣ У меня есть проблема с загранпаспортом
+2️⃣ Мне надо сдать загрнпаспорт на хранение
+3️⃣ У меня украли (потерялся) загранпаспорт
 4️⃣ Мне нужен второй загранпаспорт
     {Text_serv.ru_ancor_bottom}''']
     keyboards = [key_s["ru_rf_in_zp_sit_key"]]
@@ -644,6 +656,188 @@ async def query_ru_rf_in_zp_sit_oformlen_new_anotherman(callback_query: types.Ca
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old")
+async def query_ru_rf_in_zp_sit_oformlen_old(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''<b>Кому требуется оформить загранпаспорт?</b>
+1️⃣ Мне
+2️⃣ Детям
+3️⃣ Недееспособному лицу
+4️⃣ Другому человеку
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-мне
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_me")
+async def query_ru_rf_in_zp_sit_oformlen_old_me(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit2}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_me_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-мне-по прописке
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_me_reglive")
+async def query_ru_rf_in_zp_sit_oformlen_old_me_reglive(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit16}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_me_reglive_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-мне-где живу но нет прописки
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_me_live")
+async def query_ru_rf_in_zp_sit_oformlen_old_me_live(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit17}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_me_reglive_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-мне-Где временно зарегистрирован
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_me_templive")
+async def query_ru_rf_in_zp_sit_oformlen_old_me_templive(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit18}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_me_reglive_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+<b>Детям какого возраста нужно оформить загранпаспорт?</b>
+1️⃣ До 14 лет
+2️⃣ от 14 до 18 лет
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям-0-14
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby_0-14")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby_0_14(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit6}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_0-14_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям-0-14-по прописке
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby_0-14_reglive")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby_0_14_reglive(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit19}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_0-14_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям-0-14-Где живу, но нет прописки
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby_0-14_live")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby_0_14_live(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit20}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_0-14_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям-0-14-Где временно зарегистрирован
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby_0-14_templive")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby_0_14_templive(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit21}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_0-14_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям-14-18
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby_14-18")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby_14_18(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit6}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_14-18_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям-14-18-по прописке
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby_14-18_reglive")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby_14_18_reglive(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit22}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_14-18_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям-14-18-Где живу, но нет прописки
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby_14-18_live")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby_14_18_live(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit23}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_14-18_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-детям-14-18-Где временно зарегистрирован
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_baby_14-18_templive")
+async def query_ru_rf_in_zp_sit_oformlen_old_baby_14_18_templive(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit24}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_baby_14-18_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-недееспособный гражданин
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_nedeesposob")
+async def query_ru_rf_in_zp_sit_oformlen_old_nedeesposob(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit25}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-оформление-ЗП-другому человеку
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_oformlen_old_anotherman")
+async def query_ru_rf_in_zp_sit_oformlen_old_anotherman(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit14}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_old_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+
 # Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-Передача на хранение
 @dp.callback_query_handler(text="ru_rf_in_zp_sit_hran")
 async def query_ru_rf_in_zp_sit_hran(callback_query: types.CallbackQuery):
@@ -652,6 +846,63 @@ async def query_ru_rf_in_zp_sit_hran(callback_query: types.CallbackQuery):
 {Text_serv.forein_pasp_sit15}
 {Text_serv.ru_ancor_bottom}''']
     keyboards = [key_s["ru_rf_in_zp_sit_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-Возврат с хранения
+@dp.callback_query_handler(text="ru_rf_in_zp_vozvrat")
+async def query_ru_rf_in_zp_vozvrat(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit26}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_back1_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-украли(потерял)
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_problem")
+async def query_ru_rf_in_zp_sit_problem(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+<b>Уточните, где у вас украли загранпаспорт?</b>
+1️⃣ В России
+2️⃣ За границей
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_problem_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-украли(потерял)-в РФ
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_problem_rf")
+async def query_ru_rf_in_zp_sit_problem_rf(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit27}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_problem_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-украли(потерял)-за границей
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_problem_zagr")
+async def query_ru_rf_in_zp_sit_problem_zagr(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit28}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_problem_back_key"]]
+    await delete_previous_messages(user_id, message_storage)
+    await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
+
+# Русский язык - для граждан РФ - В Российской Федерации - Заграничный паспорт - Жизненные ситуации-второй загранпаспорт
+@dp.callback_query_handler(text="ru_rf_in_zp_sit_secondzp")
+async def query_ru_rf_in_zp_sit_secondzp(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    message_texts = [f'''
+{Text_serv.forein_pasp_sit29}
+{Text_serv.ru_ancor_bottom}''']
+    keyboards = [key_s["ru_rf_in_zp_sit_oformlen_problem_back1_key"]]
     await delete_previous_messages(user_id, message_storage)
     await send_and_save_messages(user_id, message_texts, keyboards, message_storage)
 
